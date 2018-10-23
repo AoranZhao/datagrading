@@ -8,9 +8,14 @@ var route = require('./route');
 var config = require('./config');
 
 const PORT = config.PORT;
-const STATIC_DATA_PATH = config.STATIC_DATA_PATH;
-const STATIC_URL_PATH = config.STATIC_URL_PATH;
-const STATIC_URL_PREFIX = config.STATIC_URL_PREFIX;
+
+const STATIC_REF_DATA_PATH = config.STATIC_REF_DATA_PATH;
+const STATIC_REF_URL_PATH = config.STATIC_REF_URL_PATH;
+const STATIC_SOL_DATA_PATH = config.STATIC_SOL_DATA_PATH;
+const STATIC_SOL_URL_PATH = config.STATIC_SOL_URL_PATH;
+
+const STATIC_REF_URL_PREFIX = config.STATIC_REF_URL_PREFIX;
+const STATIC_SOL_URL_PREFIX = config.STATIC_SOL_URL_PREFIX;
 
 app.use(bodyParser.json({
     type: 'application/json'
@@ -24,7 +29,8 @@ app.all('*', function (req, res, next) {
     next()
 })
 
-app.use(STATIC_URL_PATH, express.static(STATIC_DATA_PATH));
+app.use(STATIC_REF_URL_PATH, express.static(STATIC_REF_DATA_PATH));
+app.use(STATIC_SOL_URL_PATH, express.static(STATIC_SOL_DATA_PATH));
 
 app.use('/api/grading/v1', route.apiRoute);
 

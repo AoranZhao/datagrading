@@ -261,8 +261,8 @@ let check_request_getPostRefId = (id, body_id) => {
 }
 
 let add_scanPath = (reference) => {
-    let regex = new RegExp(`^${config.STATIC_DATA_PATH}`);
-    reference.scan_path = reference['reference_scan'].replace(regex, config.STATIC_URL_PREFIX);
+    let regex = new RegExp(`^${config.STATIC_REF_DATA_PATH}`);
+    reference.scan_path = reference['reference_scan'].replace(regex, config.STATIC_REF_URL_PREFIX);
     return reference;
 }
 

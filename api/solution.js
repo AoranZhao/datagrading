@@ -332,8 +332,8 @@ let promise_save = (solution) => {
 }
 
 let add_scanPath = (solution) => {
-    let regex = new RegExp(`^${config.STATIC_DATA_PATH}`);
-    solution.scan_path = solution['student_solution_scan'].replace(regex, config.STATIC_URL_PREFIX);
+    let regex = new RegExp(`^${config.STATIC_SOL_DATA_PATH}`);
+    solution.scan_path = solution['student_solution_scan'].replace(regex, config.STATIC_SOL_URL_PREFIX);
     return solution;
 }
 
