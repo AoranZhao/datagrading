@@ -1,0 +1,1 @@
+docker run -it --rm -d --name gradingtest -e STATIC_DATA_PATH=/tmp/data -v /Users/Aaron/Desktop/data:/tmp/data -p 2800:2800 grading
