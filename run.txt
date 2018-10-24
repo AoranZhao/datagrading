@@ -1,1 +1,1 @@
-docker run -it --rm -d --name gradingtest -e STATIC_DATA_PATH=/tmp/data -v /Users/Aaron/Desktop/data:/tmp/data -p 2800:2800 grading
+docker run -it --rm -d --name gradingtest -v /home/4T/usr/landy/grading_data/reference_scan:/data/reference -v /home/4T/usr/landy/grading_data/student_solution_scan:/data/solution -e STATIC_REF_URL_PREFIX=http://localhost:2800 -e STATIC_SOL_URL_PREFIX=http://localhost:2800 -p 2800:2800 grading
