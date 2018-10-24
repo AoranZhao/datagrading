@@ -26,7 +26,11 @@ let getReferenceList = (req, res) => {
             return;
         })
         .catch(err => {
-            res.status(err.statusCode).send(err);
+            if (typeof err.statusCode == 'undefined') {
+                res.status(500).send(err);
+            } else {
+                res.status(err.statusCode).send(err);
+            }
             return;
         })
 }
@@ -58,7 +62,11 @@ let getReference = (req, res) => {
             }
         })
         .catch(err => {
-            res.status(err.statusCode).send(err.reason);
+            if (typeof err.statusCode == 'undefined') {
+                res.status(500).send(err);
+            } else {
+                res.status(err.statusCode).send(err);
+            }
             return;
         })
 }
@@ -77,7 +85,11 @@ let postReference = (req, res) => {
             return;
         })
         .catch(err => {
-            res.status(err.statusCode).send(err.reason);
+            if (typeof err.statusCode == 'undefined') {
+                res.status(500).send(err);
+            } else {
+                res.status(err.statusCode).send(err);
+            }
             return;
         })
 }

@@ -36,7 +36,11 @@ let getSolutionList = (req, res) => {
             })
         })
         .catch(err => {
-            res.status(err.statusCode).send(err.reason);
+            if (typeof err.statusCode == 'undefined') {
+                res.status(500).send(err);
+            } else {
+                res.status(err.statusCode).send(err);
+            }
             return;
         })
 }
@@ -61,7 +65,11 @@ let getSolution = (req, res) => {
             }
         })
         .catch(err => {
-            res.status(err.statusCode).send(err.reason);
+            if (typeof err.statusCode == 'undefined') {
+                res.status(500).send(err);
+            } else {
+                res.status(err.statusCode).send(err);
+            }
             return;
         })
 }
@@ -80,7 +88,11 @@ let postSolution = (req, res) => {
             return;
         })
         .catch(err => {
-            res.status(err.statusCode).send(err);
+            if (typeof err.statusCode == 'undefined') {
+                res.status(500).send(err);
+            } else {
+                res.status(err.statusCode).send(err);
+            }
             return;
         })
 }
