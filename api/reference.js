@@ -8,7 +8,7 @@ let config = require('../config');
 let couchdb = utils.getDB();
 
 let referenceParameters = {
-    'reference_id': 'string',
+    // 'reference_id': 'string',
     'question_body': 'string',
     'reference_solution': 'string',
     'reference_scan': 'string',
@@ -73,16 +73,46 @@ let getReference = (req, res) => {
 
 let postReference = (req, res) => {
     let id = req.params.id;
-    let body = req.body;
-    let validation = check_request_getPostRefId(id, body['reference_id']);
-    if (typeof validation != 'undefined') {
-        res.status(validation.statusCode).send(validation);
-        return;
-    }
+    let body = Object.assign({}, req.body, { reference_id: id });
+    // let validation = check_request_getPostRefId(id, body['reference_id']);
+    // if (typeof validation != 'undefined') {
+    //     res.status(validation.statusCode).send(validation);
+    //     return;
+    // }
     promise_postReference(body)
         .then(result => {
             res.status(200).send(result);
             return;
+        })
+        .catch(err => {
+            if (typeof err.statusCode == 'undefined') {
+                res.status(500).send(err);
+            } else {
+                res.status(err.statusCode).send(err);
+            }
+            return;
+        })
+}
+
+let deleteReference = (req, res) => {
+    let id = req.params.id;
+    if (typeof id == 'undefined') {
+        res.status(400).send({
+            statusCode: 400,
+            reason: "not find reference id in url"
+        })
+        return;
+    }
+    promise_getReferenceDoc_byRefId(id)
+        .then(result => {
+            return promise_deleteReference(result);
+        })
+        .then(result => {
+            console.log(result);
+            res.status(200).send({
+                statusCode: 200,
+                reason: 'success'
+            })
         })
         .catch(err => {
             if (typeof err.statusCode == 'undefined') {
@@ -165,6 +195,7 @@ let promise_postReference = (reference) => {
                 Object.keys(referenceParameters).forEach(key => {
                     body[key] = reference[key];
                 })
+                body['reference_id'] = reference['reference_id'];
                 if (typeof oldRef == 'undefined') {
                     body['created_date'] = new Date().toISOString();
                     body['doc_type'] = 'reference';
@@ -188,6 +219,25 @@ let promise_postReference = (reference) => {
                 reject(err);
                 return;
             })
+    })
+}
+
+let promise_deleteReference = (reference) => {
+    let db = couchdb.use("datagrading");
+    return new Promise((resolve, reject) => {
+        if (typeof reference._id == 'undefined' || typeof reference._rev == 'undefined') {
+            reject({ statusCode: '500', reason: 'not find reference id or rev' });
+            return;
+        } else {
+            db.destroy(reference._id, reference._rev, (err, body) => {
+                if (err) {
+                    reject({ statusCode: err.statusCode, reason: err.reason });
+                    return;
+                } else {
+                    resolve(body);
+                }
+            })
+        }
     })
 }
 
@@ -275,12 +325,13 @@ let check_request_getPostRefId = (id, body_id) => {
 let add_scanPath = (reference) => {
     let regex = new RegExp(`^${config.STATIC_REF_DATA_PATH}`);
     reference.scan_path = reference['reference_scan'].replace(regex, config.STATIC_REF_URL_PREFIX);
-    reference.scan_path = reference.scan_path.replace('http\:\/', 'http\:\/\/');
+    // reference.scan_path = reference.scan_path.replace('http\:\/', 'http\:\/\/');
     return reference;
 }
 
 module.exports = {
     getReferenceList: getReferenceList,
     getReference: getReference,
-    postReference: postReference
+    postReference: postReference,
+    deleteReference: deleteReference
 }

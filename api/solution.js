@@ -8,8 +8,8 @@ let config = require('../config');
 let couchdb = utils.getDB();
 
 let solutionParameters = {
-    'student_solution_id': 'string',
-    'reference_id': 'string',
+    // 'student_solution_id': 'string',
+    // 'reference_id': 'string',
     'student_solution_scan': 'string',
     'score': {
         'rank': 'string',
@@ -76,13 +76,14 @@ let getSolution = (req, res) => {
 
 let postSolution = (req, res) => {
     let refId = req.params.refId, soluId = req.params.soluId;
-    let validation;
-    validation = check_solution_refIdAndSoluIdWithBody(refId, soluId, req.body);
-    if (typeof validation != 'undefined') {
-        res.status(validation.statusCode).send(validation);
-        return;
-    }
-    promise_postSolution(req.body)
+    // let validation;
+    // validation = check_solution_refIdAndSoluIdWithBody(refId, soluId, req.body);
+    // if (typeof validation != 'undefined') {
+    //     res.status(validation.statusCode).send(validation);
+    //     return;
+    // }
+    let body = Object.assign({}, req.body, { student_solution_id: soluId, reference_id: refId });
+    promise_postSolution(body)
         .then(result => {
             res.status(result.statusCode).send(result);
             return;
@@ -94,6 +95,41 @@ let postSolution = (req, res) => {
                 res.status(err.statusCode).send(err);
             }
             return;
+        })
+}
+
+let deleteSolution = (req, res) => {
+    let refId = req.params.refId, soluId = req.params.soluId;
+    if (typeof refId == 'undefined') {
+        res.status(400).send({
+            statusCode: 400,
+            reason: "not found reference id"
+        })
+        return;
+    }
+    if (typeof soluId == 'undefined') {
+        res.status(400).send({
+            statusCode: 400,
+            reason: "not found solution id"
+        })
+        return;
+    }
+    promise_getSolutionDoc_byRefIdAndSoluId(refId, soluId)
+        .then(result => {
+            return promise_deleteSolution(result);
+        })
+        .then(result => {
+            res.status(200).send({
+                stautsCode: 200,
+                reason: "success"
+            })
+        })
+        .catch(err => {
+            if (typeof err.statusCode == 'undefined') {
+                res.status(500).send(err);
+            } else {
+                res.status(err.statusCode).send(err);
+            }
         })
 }
 
@@ -181,6 +217,8 @@ let promise_postSolution = (solution) => {
         promise_getSolutionDoc_byRefIdAndSoluId(solution['reference_id'], solution['student_solution_id'])
             .then(oldSolu => {
                 let body = fill_body(solution, solutionParameters);
+                body['reference_id'] = solution['reference_id'];
+                body['student_solution_id'] = solution['student_solution_id'];
                 if (typeof oldSolu == 'undefined') {
                     body['created_date'] = new Date().toISOString();
                     body['doc_type'] = 'solution';
@@ -203,6 +241,30 @@ let promise_postSolution = (solution) => {
                 reject(err);
                 return;
             })
+    })
+}
+
+let promise_deleteSolution = (solution) => {
+    let db = couchdb.use("datagrading");
+    return new Promise((resolve, reject) => {
+        if (typeof solution._id == 'undefined' || typeof solution._rev == 'undefined') {
+            reject({
+                statusCode: 500,
+                reason: "not find solution id and rev"
+            })
+            return;
+        }
+        db.destroy(solution._id, solution._rev, (err, body) => {
+            if (err) {
+                reject({
+                    statusCode: err.statusCode,
+                    reason: err.reason
+                })
+                return;
+            } else {
+                resolve(body);
+            }
+        })
     })
 }
 
@@ -346,12 +408,13 @@ let promise_save = (solution) => {
 let add_scanPath = (solution) => {
     let regex = new RegExp(`^${config.STATIC_SOL_DATA_PATH}`);
     solution.scan_path = solution['student_solution_scan'].replace(regex, config.STATIC_SOL_URL_PREFIX);
-    reference.scan_path = reference.scan_path.replace('http\:\/', 'http\:\/\/');
+    // solution.scan_path = solution.scan_path.replace('http\:\/', 'http\:\/\/');
     return solution;
 }
 
 module.exports = {
     getSolutionList: getSolutionList,
     getSolution: getSolution,
-    postSolution: postSolution
+    postSolution: postSolution,
+    deleteSolution: deleteSolution
 }
