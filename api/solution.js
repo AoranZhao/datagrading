@@ -406,7 +406,7 @@ let promise_save = (solution) => {
 }
 
 let add_scanPath = (solution) => {
-    let regex = new RegExp(`^${config.STATIC_SOL_CONTAINER_DATA_PATH}`);
+    let regex = new RegExp(`^${config.STATIC_SOL_DATA_PATH}`);
     solution.scan_path = solution['student_solution_scan'].replace(regex, config.STATIC_SOL_URL_PREFIX);
     // solution.scan_path = solution.scan_path.replace('http\:\/', 'http\:\/\/');
     return solution;

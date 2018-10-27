@@ -323,8 +323,11 @@ let check_request_getPostRefId = (id, body_id) => {
 }
 
 let add_scanPath = (reference) => {
-    let regex = new RegExp(`^${config.STATIC_REF_CONTAINER_DATA_PATH}`);
+    console.log(`static_ref_data_path: ${config.STATIC_REF_DATA_PATH}`);
+    console.log(`static_ref_url_prefix: ${config.STATIC_REF_URL_PREFIX}`);
+    let regex = new RegExp(`^${config.STATIC_REF_DATA_PATH}`);
     reference.scan_path = reference['reference_scan'].replace(regex, config.STATIC_REF_URL_PREFIX);
+    console.log(`scan_path: ${reference.scan_path}`);
     // reference.scan_path = reference.scan_path.replace('http\:\/', 'http\:\/\/');
     return reference;
 }
