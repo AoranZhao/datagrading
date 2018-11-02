@@ -7,21 +7,18 @@ let config = require('../config');
 
 let couchdb = utils.getDB();
 
-let referenceParameters = {
-    // 'reference_id': 'string',
-    'question_body': 'string',
-    'reference_solution': 'string',
-    'reference_scan': 'string',
+let lineSegmentationParameters = {
+    'image_scan': 'string',
+    'print_line_regions': [['number']],
+    'hand_written_line_regions': [['number']],
     'label_complete': 'boolean',
-    'comment': 'string',
-    'question_body_region': [['number']],
-    'student_solution_region': [['number']]
+    'comment': 'string'
 }
 
-let getReferenceList = (req, res) => {
-    promise_getReferenceList()
+let getSegmentationList = (req, res) => {
+    promise_getSegmentationList()
         .then(result => {
-            utils.printInfoLog('getReferenceList', JSON.stringify(result));
+            utils.printInfoLog('getSegmentationList', JSON.stringify(result));
             res.status(200).send({
                 statusCode: 200,
                 data: result
@@ -29,7 +26,7 @@ let getReferenceList = (req, res) => {
             return;
         })
         .catch(err => {
-            utils.printErrLog('getReferenceList', JSON.stringify(err));
+            utils.printErrLog('getSegmentationList', JSON.stringify(err));
             if (typeof err.statusCode == 'undefined') {
                 res.status(500).send(err);
             } else {
@@ -39,37 +36,36 @@ let getReferenceList = (req, res) => {
         })
 }
 
-let getReference = (req, res) => {
+let getSegmentation = (req, res) => {
     let id = req.params.id;
     if (typeof id == 'undefined') {
-        utils.printErrLog('getReference', `missing parameter \"id\" in url`);
+        utils.printErrLog('getSegmentation', 'missing parameter \"scan-id\" in url');
         res.status(400).send({
             statusCode: 400,
-            reason: 'missing parameter \"id\" in url'
+            reason: 'missing parameter \"scan-id\" in url'
         })
         return;
     }
-    promise_getReference_byRefId(id)
-        .then(reference => {
-            if (typeof reference == 'undefined') {
-                utils.printErrLog('getReference', `not find reference with id \"${id}\"`);
+    promise_getSegmentation_byId(id)
+        .then(result => {
+            if (typeof result == 'undefined') {
+                utils.printErrLog('getSegmentation', `not find line segmentation with id \"${id}\"`);
                 res.status(404).send({
                     statusCode: 404,
-                    reason: `not find reference with id \"${id}\"`
+                    reason: `not find line segmentation with id \"${id}\"`
                 })
                 return;
             } else {
-                reference = add_scanPath(reference);
-                utils.printInfoLog('getReference', JSON.stringify(reference));
+                utils.printInfoLog('getSegmentation', JSON.stringify(result));
                 res.status(200).send({
                     statusCode: 200,
-                    data: reference
+                    data: result
                 })
                 return;
             }
         })
         .catch(err => {
-            utils.printErrLog('getReference', JSON.stringify(err));
+            utils.printErrLog('getSegmentation', JSON.stringify(err));
             if (typeof err.statusCode == 'undefined') {
                 res.status(500).send(err);
             } else {
@@ -79,30 +75,25 @@ let getReference = (req, res) => {
         })
 }
 
-let postReference = (req, res) => {
+let postSegmentation = (req, res) => {
     let id = req.params.id;
     if (typeof id == 'undefined') {
-        utils.printErrLog('postReference', `missing parameter \"id\" in url`);
+        utils.printErrLog('postSegmentation', 'missing parameter \"scan-id\" in url');
         res.status(400).send({
             statusCode: 400,
-            reason: 'missing parameter \"id\" in url'
+            reason: 'missing parameter \"scan-id\" in url'
         })
         return;
     }
-    let body = Object.assign({}, req.body, { reference_id: id });
-    // let validation = check_request_getPostRefId(id, body['reference_id']);
-    // if (typeof validation != 'undefined') {
-    //     res.status(validation.statusCode).send(validation);
-    //     return;
-    // }
-    promise_postReference(body)
+    let body = Object.assign({}, req.body, { scan_id: id });
+    promise_postSegmentation(body)
         .then(result => {
-            utils.printInfoLog('postReference', JSON.stringify(result));
+            utils.printInfoLog('postSegmentation', JSON.stringify(result));
             res.status(200).send(result);
             return;
         })
         .catch(err => {
-            utils.printErrLog('postReference', JSON.stringify(err));
+            utils.printErrLog('postSegmentation', JSON.stringify(err));
             if (typeof err.statusCode == 'undefined') {
                 res.status(500).send(err);
             } else {
@@ -112,29 +103,29 @@ let postReference = (req, res) => {
         })
 }
 
-let deleteReference = (req, res) => {
+let deleteSegmentation = (req, res) => {
     let id = req.params.id;
     if (typeof id == 'undefined') {
-        utils.printErrLog('deleteReference', `not find reference id in url`);
+        utils.printErrLog('deleteSegmentation', "not find line segmentation id in url");
         res.status(400).send({
             statusCode: 400,
-            reason: "not find reference id in url"
+            reason: "not find line segmentation id in url"
         })
         return;
     }
-    promise_getReferenceDoc_byRefId(id)
+    promise_getSegmentationDoc_byId(id)
         .then(result => {
-            return promise_deleteReference(result);
+            return promise_deleteSegmentation(result);
         })
         .then(result => {
-            utils.printInfoLog('deleteReference', JSON.stringify(result));
+            utils.printInfoLog('deleteSegmentation', JSON.stringify(result));
             res.status(200).send({
                 statusCode: 200,
                 reason: 'success'
             })
         })
         .catch(err => {
-            utils.printErrLog('deleteReference', JSON.stringify(err));
+            utils.printErrLog('deleteSegmentation', JSON.stringify(err));
             if (typeof err.statusCode == 'undefined') {
                 res.status(500).send(err);
             } else {
@@ -144,86 +135,85 @@ let deleteReference = (req, res) => {
         })
 }
 
-let promise_getReferenceList = () => {
+let promise_getSegmentationList = () => {
     let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
-        db.view('reference', 'listRefIds', {}, (err, body) => {
+        db.view('linesegmentation', 'listLineSegIds', {}, (err, body) => {
             if (err) {
                 reject({ statusCode: err.statusCode, reason: err.reason });
                 return;
             }
-            let listRefIds = [];
+            let listSegIds = [];
             body.rows.forEach(row => {
-                listRefIds.push(row.value);
+                listSegIds.push(row.value);
             })
-            resolve(listRefIds);
+            resolve(listSegIds);
         })
     })
 }
 
-let promise_getReference_byRefId = (id) => {
+let promise_getSegmentation_byId = (id) => {
     let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
-        db.view('reference', 'refId', { key: id }, (err, body) => {
+        db.view('linesegmentation', 'lineSegId', { key: id }, (err, body) => {
             if (err) {
                 reject({ statusCode: err.statusCode, reason: err.reason });
                 return;
             }
-            let reference;
+            let lineSeg;
             if (body.rows.length > 0) {
-                reference = body.rows[0].value;
+                lineSeg = body.rows[0].value;
             }
-            resolve(reference);
+            resolve(lineSeg);
         })
     })
 }
 
-let promise_getReferenceDoc_byRefId = (id) => {
+let promise_getSegmentationDoc_byId = (id) => {
     let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
-        db.view('reference', 'refId', { key: id, include_docs: true }, (err, body) => {
+        db.view('linesegmentation', 'lineSegId', { key: id, include_docs: true }, (err, body) => {
             if (err) {
                 reject({ statusCode: err.statusCode, reason: err.reason });
                 return;
             }
-            let reference;
+            let lineSeg;
             if (body.rows.length > 0) {
-                reference = body.rows[0].doc;
+                lineSeg = body.rows[0].doc;
             }
-            resolve(reference);
+            resolve(lineSeg);
         })
     })
 }
 
-let promise_postReference = (reference) => {
+let promise_postSegmentation = (lineSeg) => {
     return new Promise((resolve, reject) => {
         let validation;
-        validation = check_reference_parametersMissing(reference);
+        validation = check_reference_parametersMissing(lineSeg);
         if (typeof validation != 'undefined') {
             reject(validation);
             return;
         }
-        validation = check_reference_parametersDataType(reference);
+        validation = check_reference_parametersDataType(lineSeg);
         if (typeof validation != 'undefined') {
             reject(validation);
             return;
         }
-        // console.log("finish validation");
-        promise_getReferenceDoc_byRefId(reference['reference_id'])
-            .then(oldRef => {
+        promise_getSegmentationDoc_byId(lineSeg['scan_id'])
+            .then(oldSeg => {
                 let body = {};
-                Object.keys(referenceParameters).forEach(key => {
-                    body[key] = reference[key];
+                Object.keys(lineSegmentationParameters).forEach(key => {
+                    body[key] = lineSeg[key];
                 })
-                body['reference_id'] = reference['reference_id'];
-                if (typeof oldRef == 'undefined') {
+                body['scan_id'] = lineSeg['scan_id'];
+                if (typeof oldSeg == 'undefined') {
                     body['created_date'] = new Date().toISOString();
-                    body['doc_type'] = 'reference';
+                    body['doc_type'] = 'linesegementation';
                 } else {
-                    body['_id'] = oldRef['_id'];
-                    body['_rev'] = oldRef['_rev'];
-                    body['created_date'] = oldRef['created_date'];
-                    body['doc_type'] = oldRef['doc_type'];
+                    body['_id'] = oldSeg['_id'];
+                    body['_rev'] = oldSeg['_rev'];
+                    body['created_date'] = oldSeg['created_date'];
+                    body['doc_type'] = oldSeg['doc_type'];
                 }
                 return promise_save(body);
             })
@@ -235,25 +225,24 @@ let promise_postReference = (reference) => {
                 return;
             })
             .catch(err => {
-                // console.log(JSON.stringify(err));
                 reject(err);
                 return;
             })
     })
 }
 
-let promise_deleteReference = (reference) => {
-    let db = couchdb.use("datagrading");
+let promise_deleteSegmentation = (lineSeg) => {
+    let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
-        if (typeof reference == 'undefined') {
-            reject({ statusCode: 404, reason: "not find reference" });
+        if (typeof lineSeg == 'undefined') {
+            reject({ statusCode: 404, reason: "not find line segmentation" });
             return;
         }
-        if (typeof reference._id == 'undefined' || typeof reference._rev == 'undefined') {
-            reject({ statusCode: 500, reason: 'not find reference id or rev' });
+        if (typeof lineSeg._id == 'undefined' || typeof lineSeg._rev == 'undefined') {
+            reject({ statusCode: 500, reason: 'not find line segmentation id or rev' });
             return;
         } else {
-            db.destroy(reference._id, reference._rev, (err, body) => {
+            db.destroy(lineSeg._id, lineSeg._rev, (err, body) => {
                 if (err) {
                     reject({ statusCode: err.statusCode, reason: err.reason });
                     return;
@@ -265,11 +254,11 @@ let promise_deleteReference = (reference) => {
     })
 }
 
-let check_reference_parametersMissing = (reference) => {
+let check_reference_parametersMissing = (lineSeg) => {
     let validation;
-    let keys = Object.keys(referenceParameters);
+    let keys = Object.keys(lineSegmentationParameters);
     for (let i = 0; i < keys.length; i++) {
-        if (typeof reference[keys[i]] == 'undefined') {
+        if (typeof lineSeg[keys[i]] == 'undefined') {
             validation = {
                 statusCode: 400,
                 reason: `missing parameter in body \"${keys[i]}\"`
@@ -281,11 +270,11 @@ let check_reference_parametersMissing = (reference) => {
     return validation;
 }
 
-let check_reference_parametersDataType = (reference) => {
+let check_reference_parametersDataType = (lineSeg) => {
     let validation;
-    let keys = Object.keys(referenceParameters);
+    let keys = Object.keys(lineSegmentationParameters);
     for (let i = 0; i < keys.length; i++) {
-        if (!check_element(reference[keys[i]], referenceParameters[keys[i]])) {
+        if (!check_element(lineSeg[keys[i]], lineSegmentationParameters[keys[i]])) {
             validation = {
                 statusCode: 400,
                 reason: `wrong data type of parameter \"${keys[i]}\", should be ${Array.isArray(referenceParameters[keys[i]]) ? `Array of ${referenceParameters[keys[i]]}` : referenceParameters[keys[i]]}`
@@ -320,10 +309,10 @@ let check_element = (element, type) => {
     }
 }
 
-let promise_save = (reference) => {
+let promise_save = (lineSeg) => {
     let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
-        db.insert(reference, (err, body) => {
+        db.insert(lineSeg, (err, body) => {
             if (err) {
                 reject({ statusCode: err.statusCode, reason: err.reason });
                 return;
@@ -334,31 +323,9 @@ let promise_save = (reference) => {
     })
 }
 
-let check_request_getPostRefId = (id, body_id) => {
-    let validation;
-    if (typeof id == 'undefined' || typeof body_id == 'undefined' || id !== body_id) {
-        validation = {
-            statusCode: 400,
-            reason: `reference id in url \"${id}\" mismatch with in body \"${body_id}\"`
-        }
-    }
-    // console.log(`check request ref, id: ${id}, body_id: ${body_id}, result: ${validation}`);
-    return validation;
-}
-
-let add_scanPath = (reference) => {
-    console.log(`static_ref_data_path: ${config.STATIC_REF_DATA_PATH}`);
-    console.log(`static_ref_url_prefix: ${config.STATIC_REF_URL_PREFIX}`);
-    let regex = new RegExp(`^${config.STATIC_REF_DATA_PATH}`);
-    reference.scan_path = reference['reference_scan'].replace(regex, config.STATIC_REF_URL_PREFIX);
-    console.log(`scan_path: ${reference.scan_path}`);
-    // reference.scan_path = reference.scan_path.replace('http\:\/', 'http\:\/\/');
-    return reference;
-}
-
 module.exports = {
-    getReferenceList: getReferenceList,
-    getReference: getReference,
-    postReference: postReference,
-    deleteReference: deleteReference
+    getSegmentationList: getSegmentationList,
+    getSegmentation: getSegmentation,
+    postSegmentation: postSegmentation,
+    deleteSegmentation: deleteSegmentation
 }

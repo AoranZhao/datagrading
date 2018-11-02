@@ -11,6 +11,8 @@ let solutionParameters = {
     // 'student_solution_id': 'string',
     // 'reference_id': 'string',
     'student_solution_scan': 'string',
+    'label_complete': 'boolean',
+    'comment': 'string',
     'score': {
         'rank': 'string',
         'empty': 'boolean',
@@ -22,6 +24,7 @@ let solutionParameters = {
 let getSolutionList = (req, res) => {
     let refId = req.params.refId;
     if (typeof refId == 'undefined') {
+        utils.printErrLog('getSolutionList', 'missing parameter reference id');
         res.status(400).send({
             statusCode: 400,
             reason: 'missing parameter reference id'
@@ -30,12 +33,14 @@ let getSolutionList = (req, res) => {
     }
     promise_getSolutionList(refId)
         .then(result => {
+            utils.printInfoLog('getSolutionList', JSON.stringify(result));
             res.status(200).send({
                 statusCode: 200,
                 data: result
             })
         })
         .catch(err => {
+            utils.printErrLog('getSolutionList', JSON.stringify(err));
             if (typeof err.statusCode == 'undefined') {
                 res.status(500).send(err);
             } else {
@@ -47,9 +52,18 @@ let getSolutionList = (req, res) => {
 
 let getSolution = (req, res) => {
     let refId = req.params.refId, soluId = req.params.soluId;
+    if (typeof refId == 'undefined' || typeof soluId == 'undefined') {
+        utils.printErrLog('getSolution', 'missing parameter reference id or solution id');
+        res.status(400).send({
+            statusCode: 400,
+            reason: 'missing parameter reference id or solution id'
+        })
+        return;
+    }
     promise_getSolution_byRefIdAndSoluId(refId, soluId)
         .then(result => {
             if (typeof result == 'undefined') {
+                utils.printErrLog('getSolution', `not find solution with id \"${soluId}\" relating reference with id \"${refId}\"`);
                 res.status(404).send({
                     statusCode: 404,
                     reason: `not find solution with id \"${soluId}\" relating reference with id \"${refId}\"`
@@ -57,6 +71,7 @@ let getSolution = (req, res) => {
                 return;
             } else {
                 result = add_scanPath(result);
+                utils.printInfoLog('getSolution', JSON.stringify(result));
                 res.status(200).send({
                     statusCode: 200,
                     data: result
@@ -65,6 +80,7 @@ let getSolution = (req, res) => {
             }
         })
         .catch(err => {
+            utils.printErrLog('getSolution', JSON.stringify(err));
             if (typeof err.statusCode == 'undefined') {
                 res.status(500).send(err);
             } else {
@@ -76,6 +92,14 @@ let getSolution = (req, res) => {
 
 let postSolution = (req, res) => {
     let refId = req.params.refId, soluId = req.params.soluId;
+    if (typeof refId == 'undefined' || typeof soluId == 'undefined') {
+        utils.printErrLog('postSolution', 'missing parameter reference id or solution id');
+        res.status(400).send({
+            statusCode: 400,
+            reason: 'missing parameter reference id or solution id'
+        })
+        return;
+    }
     // let validation;
     // validation = check_solution_refIdAndSoluIdWithBody(refId, soluId, req.body);
     // if (typeof validation != 'undefined') {
@@ -85,10 +109,12 @@ let postSolution = (req, res) => {
     let body = Object.assign({}, req.body, { student_solution_id: soluId, reference_id: refId });
     promise_postSolution(body)
         .then(result => {
+            utils.printInfoLog('postSolution', JSON.stringify(result));
             res.status(result.statusCode).send(result);
             return;
         })
         .catch(err => {
+            utils.printErrLog('postSolution', JSON.stringify(err));
             if (typeof err.statusCode == 'undefined') {
                 res.status(500).send(err);
             } else {
@@ -101,6 +127,7 @@ let postSolution = (req, res) => {
 let deleteSolution = (req, res) => {
     let refId = req.params.refId, soluId = req.params.soluId;
     if (typeof refId == 'undefined') {
+        utils.printErrLog('deleteSolution', 'not found reference id');
         res.status(400).send({
             statusCode: 400,
             reason: "not found reference id"
@@ -108,6 +135,7 @@ let deleteSolution = (req, res) => {
         return;
     }
     if (typeof soluId == 'undefined') {
+        utils.printErrLog('deleteSolution', 'not found solution id');
         res.status(400).send({
             statusCode: 400,
             reason: "not found solution id"
@@ -119,12 +147,14 @@ let deleteSolution = (req, res) => {
             return promise_deleteSolution(result);
         })
         .then(result => {
+            utils.printInfoLog('deleteSolution', JSON.stringify(result));
             res.status(200).send({
                 stautsCode: 200,
                 reason: "success"
             })
         })
         .catch(err => {
+            utils.printErrLog('deleteSolution', JSON.stringify(err));
             if (typeof err.statusCode == 'undefined') {
                 res.status(500).send(err);
             } else {
@@ -247,6 +277,10 @@ let promise_postSolution = (solution) => {
 let promise_deleteSolution = (solution) => {
     let db = couchdb.use("datagrading");
     return new Promise((resolve, reject) => {
+        if (typeof solution == 'undefined') {
+            reject({ statusCode: 404, reason: "not find solution" });
+            return;
+        }
         if (typeof solution._id == 'undefined' || typeof solution._rev == 'undefined') {
             reject({
                 statusCode: 500,
