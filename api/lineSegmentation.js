@@ -9,8 +9,20 @@ let couchdb = utils.getDB();
 
 let lineSegmentationParameters = {
     'image_scan': 'string',
-    'print_line_regions': [['number']],
-    'hand_written_line_regions': [['number']],
+    'print_line_regions': [{
+        'x': 'number',
+        'y': 'number',
+        'w': 'number',
+        'h': 'number',
+        'c': 'number'
+    }],
+    'hand_written_line_regions': [{
+        'x': 'number',
+        'y': 'number',
+        'w': 'number',
+        'h': 'number',
+        'c': 'number'
+    }],
     'label_complete': 'boolean',
     'comment': 'string'
 }
@@ -56,6 +68,7 @@ let getSegmentation = (req, res) => {
                 })
                 return;
             } else {
+                result = add_scanPath(result);
                 utils.printInfoLog('getSegmentation', JSON.stringify(result));
                 res.status(200).send({
                     statusCode: 200,
@@ -271,41 +284,59 @@ let check_reference_parametersMissing = (lineSeg) => {
 }
 
 let check_reference_parametersDataType = (lineSeg) => {
-    let validation;
-    let keys = Object.keys(lineSegmentationParameters);
-    for (let i = 0; i < keys.length; i++) {
-        if (!check_element(lineSeg[keys[i]], lineSegmentationParameters[keys[i]])) {
-            validation = {
-                statusCode: 400,
-                reason: `wrong data type of parameter \"${keys[i]}\", should be ${Array.isArray(referenceParameters[keys[i]]) ? `Array of ${referenceParameters[keys[i]]}` : referenceParameters[keys[i]]}`
-            }
-            break;
-        }
-    }
-    // console.log(`checking reference parameters data type, reference: ${reference}, result: ${validation}`);
-    return validation;
+    return check_element('body', lineSeg, lineSegmentationParameters);
 }
 
-let check_element = (element, type) => {
-    if (typeof element == 'undefined' || typeof type == 'undefined') {
-        return true;
+let check_element = (curKey, element, type) => {
+    let validation;
+    if (typeof element == 'undefined') {
+        return {
+            statusCode: 400,
+            reason: `parameter \"${curKey}\" missing`
+        };
     } else if (Array.isArray(type)) {
-        let newEle, newType;
+        let newType = type[0];
         if (Array.isArray(element)) {
-            if (element.length > 0)
-                newEle = element[0];
-            if (type.length > 0)
-                newType = type[0];
-            return check_element(newEle, newType);
+            for (let i = 0; i < element.length; i++) {
+                validation = check_element(curKey, element[i], newType);
+                if (typeof validation != 'undefined') {
+                    break;
+                }
+            }
+            return validation;
         } else {
-            return false;
+            return {
+                statusCode: 400,
+                reason: `parameter \"${curKey}\" should be array`
+            }
+        }
+    } else if (typeof type == 'string') {
+        if (typeof element == type) {
+            return validation;
+        } else {
+            return {
+                statusCode: 400,
+                reason: `wrong data type of parameter \"${curKey}\", should be \"${type}\"`
+            }
+        }
+    } else if (typeof type == 'object') {
+        if (typeof element == 'object') {
+            let keys = Object.keys(type);
+            for (let i = 0; i < keys.length; i++) {
+                validation = check_element(keys[i], element[keys[i]], type[keys[i]]);
+                if (typeof validation != 'undefined') {
+                    break;
+                }
+            }
+            return validation;
+        } else {
+            return {
+                statusCode: 400,
+                reason: `wrong data type of parameter \"${curKey}\"`
+            }
         }
     } else {
-        if (typeof element == type) {
-            return true;
-        } else {
-            return false;
-        }
+        return validation;
     }
 }
 
@@ -321,6 +352,12 @@ let promise_save = (lineSeg) => {
             }
         })
     })
+}
+
+let add_scanPath = (lineSeg) => {
+    let regex = new RegExp(`^${config.STATIC_SOL_DATA_PATH}`);
+    lineSeg.scan_path = lineSeg['image_scan'].replace(regex, config.STATIC_SOL_URL_PREFIX);
+    return lineSeg;
 }
 
 module.exports = {
