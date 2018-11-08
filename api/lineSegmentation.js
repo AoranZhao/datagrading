@@ -30,7 +30,7 @@ let lineSegmentationParameters = {
 let getSegmentationList = (req, res) => {
     promise_getSegmentationList()
         .then(result => {
-            utils.printInfoLog('getSegmentationList', JSON.stringify(result));
+            utils.printInfoLog('getSegmentationList: success, get ', result.length, ' items');
             res.status(200).send({
                 statusCode: 200,
                 data: result

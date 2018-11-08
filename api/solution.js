@@ -33,7 +33,7 @@ let getSolutionList = (req, res) => {
     }
     promise_getSolutionList(refId)
         .then(result => {
-            utils.printInfoLog('getSolutionList', JSON.stringify(result));
+            utils.printInfoLog('getSolutionList: success, get ', result.length, ' items');
             res.status(200).send({
                 statusCode: 200,
                 data: result

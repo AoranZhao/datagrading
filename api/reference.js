@@ -21,7 +21,7 @@ let referenceParameters = {
 let getReferenceList = (req, res) => {
     promise_getReferenceList()
         .then(result => {
-            utils.printInfoLog('getReferenceList', JSON.stringify(result));
+            utils.printInfoLog('getReferenceList', ' : success, get ', result.length, ' references');
             res.status(200).send({
                 statusCode: 200,
                 data: result
