@@ -5,7 +5,8 @@ let fs = require('fs');
 let path = require('path');
 let config = require('../config');
 
-let couchdb = utils.getDB();
+// let couchdb = utils.getDB();
+let db = utils.getDB();
 
 let lineSegmentationParameters = {
     'image_scan': 'string',
@@ -30,7 +31,7 @@ let lineSegmentationParameters = {
 let getSegmentationList = (req, res) => {
     promise_getSegmentationList()
         .then(result => {
-            utils.printInfoLog('getSegmentationList: success, get ', result.length, ' items');
+            utils.printInfoLog('getSegmentationList', `success, get ${result.length} items`);
             res.status(200).send({
                 statusCode: 200,
                 data: result
@@ -149,7 +150,7 @@ let deleteSegmentation = (req, res) => {
 }
 
 let promise_getSegmentationList = () => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         db.view('linesegmentation', 'listLineSegIds', {}, (err, body) => {
             if (err) {
@@ -166,7 +167,7 @@ let promise_getSegmentationList = () => {
 }
 
 let promise_getSegmentation_byId = (id) => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         db.view('linesegmentation', 'lineSegId', { key: id }, (err, body) => {
             if (err) {
@@ -183,7 +184,7 @@ let promise_getSegmentation_byId = (id) => {
 }
 
 let promise_getSegmentationDoc_byId = (id) => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         db.view('linesegmentation', 'lineSegId', { key: id, include_docs: true }, (err, body) => {
             if (err) {
@@ -245,7 +246,7 @@ let promise_postSegmentation = (lineSeg) => {
 }
 
 let promise_deleteSegmentation = (lineSeg) => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         if (typeof lineSeg == 'undefined') {
             reject({ statusCode: 404, reason: "not find line segmentation" });
@@ -341,7 +342,7 @@ let check_element = (curKey, element, type) => {
 }
 
 let promise_save = (lineSeg) => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         db.insert(lineSeg, (err, body) => {
             if (err) {

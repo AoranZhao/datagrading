@@ -5,7 +5,8 @@ let fs = require('fs');
 let path = require('path');
 let config = require('../config');
 
-let couchdb = utils.getDB();
+// let couchdb = utils.getDB();
+let db = utils.getDB();
 
 let referenceParameters = {
     // 'reference_id': 'string',
@@ -21,7 +22,7 @@ let referenceParameters = {
 let getReferenceList = (req, res) => {
     promise_getReferenceList()
         .then(result => {
-            utils.printInfoLog('getReferenceList', ' : success, get ', result.length, ' references');
+            utils.printInfoLog('getReferenceList', `success, get ${result.length} references`);
             res.status(200).send({
                 statusCode: 200,
                 data: result
@@ -145,7 +146,7 @@ let deleteReference = (req, res) => {
 }
 
 let promise_getReferenceList = () => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         db.view('reference', 'listRefIds', {}, (err, body) => {
             if (err) {
@@ -162,7 +163,7 @@ let promise_getReferenceList = () => {
 }
 
 let promise_getReference_byRefId = (id) => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         db.view('reference', 'refId', { key: id }, (err, body) => {
             if (err) {
@@ -179,7 +180,7 @@ let promise_getReference_byRefId = (id) => {
 }
 
 let promise_getReferenceDoc_byRefId = (id) => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         db.view('reference', 'refId', { key: id, include_docs: true }, (err, body) => {
             if (err) {
@@ -243,7 +244,7 @@ let promise_postReference = (reference) => {
 }
 
 let promise_deleteReference = (reference) => {
-    let db = couchdb.use("datagrading");
+    // let db = couchdb.use("datagrading");
     return new Promise((resolve, reject) => {
         if (typeof reference == 'undefined') {
             reject({ statusCode: 404, reason: "not find reference" });
@@ -321,7 +322,7 @@ let check_element = (element, type) => {
 }
 
 let promise_save = (reference) => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         db.insert(reference, (err, body) => {
             if (err) {
@@ -347,11 +348,11 @@ let check_request_getPostRefId = (id, body_id) => {
 }
 
 let add_scanPath = (reference) => {
-    console.log(`static_ref_data_path: ${config.STATIC_REF_DATA_PATH}`);
-    console.log(`static_ref_url_prefix: ${config.STATIC_REF_URL_PREFIX}`);
+    // console.log(`static_ref_data_path: ${config.STATIC_REF_DATA_PATH}`);
+    // console.log(`static_ref_url_prefix: ${config.STATIC_REF_URL_PREFIX}`);
     let regex = new RegExp(`^${config.STATIC_REF_DATA_PATH}`);
     reference.scan_path = reference['reference_scan'].replace(regex, config.STATIC_REF_URL_PREFIX);
-    console.log(`scan_path: ${reference.scan_path}`);
+    // console.log(`scan_path: ${reference.scan_path}`);
     // reference.scan_path = reference.scan_path.replace('http\:\/', 'http\:\/\/');
     return reference;
 }

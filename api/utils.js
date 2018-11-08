@@ -1,7 +1,9 @@
 var nano = require('nano');
 
+let db = nano(process.env.COUCHDB_URL || 'http://127.0.0.1:8840').use('datagrading');
+
 let getDB = () => {
-    return nano(process.env.COUCHDB_URL || 'http://127.0.0.1:8840');
+    return db;
 }
 
 let printInfoLog = (func, str) => {

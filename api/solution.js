@@ -5,7 +5,8 @@ let fs = require('fs');
 let path = require('path');
 let config = require('../config');
 
-let couchdb = utils.getDB();
+// let couchdb = utils.getDB();
+let db = utils.getDB();
 
 let solutionParameters = {
     // 'student_solution_id': 'string',
@@ -33,7 +34,7 @@ let getSolutionList = (req, res) => {
     }
     promise_getSolutionList(refId)
         .then(result => {
-            utils.printInfoLog('getSolutionList: success, get ', result.length, ' items');
+            utils.printInfoLog('getSolutionList', `success, get ${result.length} items`);
             res.status(200).send({
                 statusCode: 200,
                 data: result
@@ -164,7 +165,7 @@ let deleteSolution = (req, res) => {
 }
 
 let promise_getSolutionList = (refId) => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         db.view('solution', 'listSoluIds', { key: refId }, (err, body) => {
             if (err) {
@@ -181,7 +182,7 @@ let promise_getSolutionList = (refId) => {
 }
 
 let promise_getSolution_byRefIdAndSoluId = (refId, soluId) => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         let validation;
         validation = check_solution_refIdAndSoluId(refId, soluId);
@@ -204,7 +205,7 @@ let promise_getSolution_byRefIdAndSoluId = (refId, soluId) => {
 }
 
 let promise_getSolutionDoc_byRefIdAndSoluId = (refId, soluId) => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         let validation;
         validation = check_solution_refIdAndSoluId(refId, soluId);
@@ -275,7 +276,7 @@ let promise_postSolution = (solution) => {
 }
 
 let promise_deleteSolution = (solution) => {
-    let db = couchdb.use("datagrading");
+    // let db = couchdb.use("datagrading");
     return new Promise((resolve, reject) => {
         if (typeof solution == 'undefined') {
             reject({ statusCode: 404, reason: "not find solution" });
@@ -427,7 +428,7 @@ let fill_body = (element, type) => {
 }
 
 let promise_save = (solution) => {
-    let db = couchdb.use('datagrading');
+    // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
         db.insert(solution, (err, body) => {
             if (err) {
