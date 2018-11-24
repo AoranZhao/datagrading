@@ -14,7 +14,10 @@ let referenceParameters = {
     'reference_solution': 'string',
     'reference_scan': 'string',
     'label_complete': 'boolean',
-    'comment': 'string',
+    'text_content': 'string',
+    'checked': 'boolean',
+    'note1': 'string',
+    'note2': 'string',
     'question_body_region': [['number']],
     'student_solution_region': [['number']]
 }

@@ -25,7 +25,10 @@ let lineSegmentationParameters = {
         'c': 'number'
     }],
     'label_complete': 'boolean',
-    'comment': 'string'
+    'text_content': 'string',
+    'checked': 'boolean',
+    'note1': 'string',
+    'note2': 'string'
 }
 
 let getSegmentationList = (req, res) => {
