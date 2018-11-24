@@ -1,6 +1,7 @@
 var reference = require('./reference');
 var solution = require('./solution');
 var lineSegmentation = require('./lineSegmentation');
+var images = require('./images');
 
 module.exports = {
     ref_getList: reference.getReferenceList,
@@ -16,5 +17,9 @@ module.exports = {
     lineseg_getList: lineSegmentation.getSegmentationList,
     lineseg_getSeg: lineSegmentation.getSegmentation,
     lineseg_postSeg: lineSegmentation.postSegmentation,
-    lineseg_deleteSeg: lineSegmentation.deleteSegmentation
+    lineseg_deleteSeg: lineSegmentation.deleteSegmentation,
+
+    image_getImages: images.getImages,
+    image_postImages: images.postImages,
+    image_deleteImages: images.deleteImages
 }
