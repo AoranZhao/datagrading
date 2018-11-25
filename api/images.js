@@ -128,10 +128,17 @@ let promise_deleteImages = (scan_id, image_id) => {
                     }
                     let id = body.rows[0].doc._id;
                     let rev = body.rows[0].doc._rev;
+                    let filePath;
+                    if (typeof body.rows[0].doc.filename !== 'undefined') {
+                        filePath = path.join(config.STATIC_IMG_CONTAINER_DATA_PATH, body.rows[0].doc.filename);
+                    }
                     db.destroy(id, rev, (err, body) => {
                         if (err) {
                             reject({ statusCode: err.statusCode, reason: err.reason });
                             return;
+                        }
+                        if (typeof filePath !== 'undefined') {
+                            fs.unlinkSync(filePath);
                         }
                         resolve();
                     })
