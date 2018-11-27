@@ -171,7 +171,9 @@ let promise_save = (scan_id, images) => {
         let objs = images.reduce((arr, image) => {
             let paths = image.path.split('/');
             let newPath = path.join(config.STATIC_IMG_CONTAINER_DATA_PATH, paths[paths.length - 1]);
-            fs.renameSync(image.path, newPath);
+            // fs.renameSync(image.path, newPath);
+            fs.copyFileSync(image.path, newPath);
+            fs.unlinkSync(image.path);
             arr.push({
                 scan_id: scan_id,
                 filename: paths[paths.length - 1],
