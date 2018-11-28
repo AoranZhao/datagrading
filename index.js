@@ -42,6 +42,9 @@ app.use(STATIC_REF_URL_PATH, express.static(STATIC_REF_CONTAINER_DATA_PATH));
 app.use(STATIC_SOL_URL_PATH, express.static(STATIC_SOL_CONTAINER_DATA_PATH));
 app.use(STATIC_IMG_URL_PATH, express.static(STATIC_IMG_CONTAINER_DATA_PATH));
 
+app.use('/score', express.static('public/score'));
+app.use('/input', express.static('public/input'));
+
 app.use('/api/grading/v1', route.apiRoute);
 
 app.listen(PORT, () => {

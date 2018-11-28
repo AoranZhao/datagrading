@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Solution</title>
+    <style>
+        div{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background:url(2.png) no-repeat;
+            background-size:cover;
+            background-color: #DDD6BA;
+        }
+        .buttons{
+            width:1250px; height: 70px;
+            position: relative;left:0; top:40px; right:0; bottom: 0; margin: auto;
+            font-size: 20px;
+            font-family: Helvetica;color:black;
+         }
+        .btn{
+            font-family: Helvetica;
+            font-size:16px;
+            background-color:	#E4EDE3 ;
+            border-radius: 7px;
+        }
+        .btn-font{
+            font-family: Helvetica;
+            font-size:16px;
+            background-color:	#E4EDE3 ;
+            border-radius: 28px;
+            position: relative;
+            top: 3px;
+        }
+        .btn-post{
+            font-family: Helvetica;
+            font-size:18px;
+            background-color:	#E4EDE3 ;
+            border-radius: 10px;
+            position: relative;
+            top:15px;
+        }
+        .txt{
+            width:1250px;
+            height: 538px;
+            position: relative;left:0; top:80px; right:0; bottom: 0; margin: auto;padding: 0;
+            margin-top: 25px;
+        }
+        .txt textarea{
+            padding-left:2px;
+            padding-right: 2px;
+            padding-top: 2px;
+            left: auto;
+            width: 200px;
+            height: 30px;
+            font-family: Helvetica;
+            font-size: 18px;
+            line-height: 30px;
+            background-color: #E4EDE3;
+            overflow-y:visible;
+            float:left;
+            resize: none;
+            border-radius: 4px;
+        }
+
+        .txt img{
+            height:640px;
+            position: relative;
+            float: left;
+            margin-right: 30px;
+            border-radius: 6px;
+        }
+
+        .txt div{
+            position: relative;
+            width: 200px;
+            float:left;
+        }
+
+        .grade{
+            font-family: Helvetica;
+            font-size:16px;
+            background-color:	#E4EDE3 ;
+            border-radius: 7px;
+            margin: 2px;padding:2px;
+            width: 40px; height: 30px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="com_icon" style="width: 100px;height: 100px;border-radius: 50px;position: absolute;left: 900px;top:60px;display: none"><img src="Completed.png" style="width:50px;height: 50px"></div>
+<div class="buttons">
+        <select class="btn" id="refList"  name="referenceList"></select>&nbsp;&nbsp;
+        <button class="btn" id="add">AddNew</button> or
+        <select class="btn" id="soList"  name="solutionList"></select>
+        </br
+        ><button class="btn-font" id="plus" style="margin-top: 10px">Font_size+</button>
+        <button class="btn-font" id="min"  style="margin-top: 10px">Font_size-</button>
+        </br>
+        <button class="btn-post" id="submit">Submit</button>
+        <button class="btn-post" id="delete">Delete</button>
+        <HR style=" position: relative; top: 14px"  width="100%" color=#E4EFE9 SIZE=2>
+    </div>
+<div class="txt">
+    <div class="ref_solution" style="margin-right: 30px; width: 350px">
+        <span>reference_solution:</span>
+        <textarea id="reference_solution" readonly="readonly" spellcheck="false" style="width: 350px; height: 600px;
+            font-family: Helvetica;
+            font-size: 18px;
+            line-height: 30px;
+            background-color: #E4EDE3;
+            overflow-y:visible;
+            float:left;
+            resize: none;
+            border-radius: 4px;"></textarea></div>
+    <img id="soImg"/>
+    <div style="float: left">
+        <span>student_solution_id:</span></br>
+        <textarea class="student_solution_text" id="student_solution_id" spellcheck="false"></textarea></br></br>
+
+        <span>reference_id:</span></br>
+        <textarea class="student_solution_text" id="ref_id" spellcheck="false"></textarea></br></br>
+
+        <span style="display:none">student_solution_scan:</span>
+        <textarea class="student_solution_text" id="student_solution_scan" spellcheck="false" style="width:500px; height: 60px; display:none"></textarea></br></br>
+        <span>score:rank:</span>
+        <div style=" width: 450px; height: 40px">
+        <textarea class="student_solution_text" id="rank" spellcheck="false"></textarea>
+        <button class="grade" id="S">S</button>
+        <button class="grade" id="A">A</button>
+        <button class="grade" id="B">B</button>
+        <button class="grade" id="C">C</button>
+        <button class="grade" id="D">D</button></div></br></br>
+
+        <span>score:empty:</span>
+        <div style=" width: 450px; height: 40px">
+        <textarea class="student_solution_text" id="empty" spellcheck="false" ></textarea>
+        <button class="grade" id="empty_true">true</button>
+        <button class="grade" id="empty_false">false</button></div></br></br>
+
+        <span>score:answer_exist:</span>
+        <div style=" width: 450px; height: 40px">
+        <textarea class="student_solution_text" id="answer_exist" spellcheck="false" ></textarea>
+        <button class="grade" id="exist_true">true</button>
+        <button class="grade" id="exist_false">false</button></div></br></br>
+
+        <span>score:different_solution:</span>
+        <div style=" width: 450px; height: 40px">
+        <textarea class="student_solution_text" id="different_solution" spellcheck="false" ></textarea>
+        <button class="grade" id="different_true">true</button>
+        <button class="grade" id="different_false">false</button></div></br></br>
+
+		<span>checked:</span>
+        <div style=" width: 450px; height: 40px">
+        <textarea class="student_solution_text" id="checked" spellcheck="false" ></textarea>
+        <button class="grade" id="checked_true">true</button>
+        <button class="grade" id="checked_false">false</button></div></br></br>
+
+        <span>text_content:</span></br>
+        <textarea class="student_solution_text" id="text_content" spellcheck="false" ></textarea></br></br>
+
+        <span>label_complete:</span>
+        <div style=" width: 450px; height: 40px">
+        <textarea class="student_solution_text" id="label_complete" spellcheck="false"  readonly="readonly"></textarea>
+<!--
+        <button class="grade" id="complete_true">true</button>
+        <button class="grade" id="complete_false">false</button></div></br></br>
+-->
+         <span style="display: none">note1:</span>
+         <textarea id="note1" spellcheck="false" style="width: 450px ; display: none"></textarea></br></br>
+         <span style="display: none">note2:</span>
+         <textarea id="note2" spellcheck="false" style="width: 450px ; display: none"></textarea></br></br>
+        <span style="display:none">scan_path:</span>
+        <textarea class="student_solution_text" id="scan_path" spellcheck="false" style="width: 400px; height: 60px;display: none"></textarea>
+    </div>
+</div>
+
+ </div>
+</body>
+<script src="jquery-3.3.1.min.js"></script>
+<script>
+
+    let editedJson = null,text_student_solution_id, text_reference_id, text_student_solution_scan, text_rank, refData = null, soData = null,
+        text_empty, text_answer_exist, text_different_solution, text_label_complete, text_text_content, text_checked,text_note1,text_note2,text_scan_path, text = null,size = 0;
+
+    //字体大小
+    let thisEle = $("textarea" ).css("font-size");
+    let textFontSize = parseFloat(thisEle, 10);
+    $("#plus").on('click', function(){
+        size += 2;
+        $('textarea').css("font-size",  textFontSize + size );
+        $("textarea").css("line-height", 1.5 );
+        console.log(thisEle);
+    });
+    $("#min").on('click', function(){
+        size -= 2;
+        $("textarea").css("font-size",  textFontSize + size );
+        $("textarea").css("line-height", 1.5 );
+    });
+
+    //初始化select
+    initRef();
+    $('#soList').append('<option value="init" style="display:none ">Please select solution</option>');
+
+    function initRef(){
+        $.get("http://datagrading.learnable.ai/api/grading/v1/references/", function( data ){
+           refData = data.data;
+           let strHTMLArray = [];
+           strHTMLArray.length=0;
+           $("#refList").html(strHTMLArray.join(''));
+           strHTMLArray.push('<option value="please select" style="display: none">'+"Please select reference"+"</option>>");
+           for(let i = 0; i<refData.length; i++){
+               let refName = refData[i];
+               strHTMLArray.push('<option value="'+refName+'">'+refName+'</option>>')
+           }
+            $("#refList").html(strHTMLArray.join(''));
+        });
+    }
+
+    function initSo(){
+		
+        let options = $('#refList').find('option:selected').val();
+        if(options!=undefined) {
+            $.get("http://datagrading.learnable.ai/api/grading/v1/references/"+options+"/solutions", function (data) {
+                soData = data.data;
+                let strHTMLArray = [];
+                strHTMLArray.length = 0;
+                $("#soList").html(strHTMLArray.join(''));
+                strHTMLArray.push('<option value="please select" style="display: none">' + "Please select solution" + "</option>>");
+                // console.log(soData);
+                for (let i = 0; i < soData.length; i++) {
+                    let soName = soData[i];
+                    strHTMLArray.push('<option value="' + soName + '">' + soName + '</option>>');
+                }
+                strHTMLArray.push('<option value="none">' + "New Option" + "</option>>");
+                // console.log(strHTMLArray);
+                // $("#soList").find("option:selected").text("");
+                // $("#soList").empty();
+                // console.log($('#soList'));
+                $("#soList").html(strHTMLArray.join(''));
+            });
+        }
+    }
+    $("#refList").on('change',function () {
+        let options = $('#refList').find('option:selected').val();
+        $("#reference_solution").val("");
+        $.get("http://datagrading.learnable.ai/api/grading/v1/references/"+options, function( data ){
+            let ref_Data = data.data;
+            let ref_so_data =  ref_Data.reference_solution
+            $("#reference_solution").val(JSON.stringify(ref_so_data));
+
+        });
+        if(options!=undefined) {
+            $.get("http://datagrading.learnable.ai/api/grading/v1/references/" + options + "/solutions", function (data) {
+                let soData = data.data;
+                let strHTMLArray = [];
+                strHTMLArray.length = 0;
+                $("#soList").html(strHTMLArray.join(''));
+                strHTMLArray.push('<option value="please select" style="display: none">' + "Please select solution" + "</option>>");
+                // console.log(soData);
+                for (let i = 0; i < soData.length; i++) {
+                    let soName = soData[i];
+                    strHTMLArray.push('<option value="' + soName + '">' + soName + '</option>>');
+                }
+                strHTMLArray.push('<option value="none">' + "New Option" + "</option>>");
+                // console.log(strHTMLArray);
+                // $("#soList").find("option:selected").text("");
+                // $("#soList").empty();
+                // console.log($('#soList'));
+                $("#soList").html(strHTMLArray.join(''));
+            });
+        }
+        $(".sdt_slo_text").val("");
+        $("#soImg").attr('src','');
+    });
+
+    //文本投射在文本框,图片加载
+
+    function inputText(e) {
+        $("#student_solution_id").val(JSON.stringify((e.student_solution_id)));
+        $("#ref_id").val(JSON.stringify((e.reference_id)));
+        $("#student_solution_scan").val(JSON.stringify(e.student_solution_scan));
+        $("#rank").val(JSON.stringify(e.score.rank));
+        $("#empty").val(JSON.stringify(e.score.empty));
+        $("#answer_exist").val(JSON.stringify(e.score.answer_exist));
+        $("#different_solution").val(JSON.stringify(e.score.different_solution));
+        $("#label_complete").val(JSON.stringify(e.label_complete));
+        $("#text_content").val(JSON.stringify(e.text_content));
+        $("#scan_path").val(JSON.stringify(e.scan_path));
+		$("#checked").val(JSON.stringify(e.checked));
+    };
+
+    function getDetail(refnum,sonum){
+        $(".sdt_slo_text").val("");
+        $("#soImg").attr('src','');
+        // console.log("http://datagrading.learnable.ai/api/grading/v1/soesonces/"+listnum);
+        $.get( "http://datagrading.learnable.ai/api/grading/v1/references/"+ refnum + "/solutions/"+sonum, function( data ) {
+            soData = data.data ;
+			if(soData.label_complete==true){
+				$("#com_icon").css("display","initial");
+			}
+			else{
+				$("#com_icon").css("display","none");
+			}
+            inputText(soData);
+            let imagesrc = soData.scan_path;
+            let imagestrsrc =JSON.stringify(imagesrc);
+            let fimagesrc = "http://"+imagestrsrc.replace('"','').replace('.png"','.png');
+            $("#soImg").attr('src',fimagesrc);
+        });
+    }
+
+    //获取对应文本并投射在文本框
+    $("#soList").on('change',function () {
+        let refoption = $('#refList').find('option:selected').val();
+        let sooption = $('#soList').find('option:selected').val();
+        if(sooption != undefined) {
+            // console.log(options);
+            getDetail(refoption,sooption);
+        }
+    });
+
+
+    //实时获取文本框内容并转化为JSON
+        //btn更改grading
+    $(".grade").on('click', function () {
+        if($(this).is("#S")){
+            $("#rank").val("\""+$(this).text()+"\"");
+        }
+        else if($(this).is("#A")){
+            $("#rank").val("\""+$(this).text()+"\"");
+        }
+        else if($(this).is("#B")){
+            $("#rank").val("\""+$(this).text()+"\"");
+        }
+        else if($(this).is("#C")){
+            $("#rank").val("\""+$(this).text()+"\"");
+        }
+        else if($(this).is("#D")){
+            $("#rank").val("\""+$(this).text()+"\"");
+        }
+        else if($(this).is("#empty_true")){
+            $("#empty").val($(this).text());
+        }
+        else if($(this).is("#empty_false")){
+            $("#empty").val($(this).text());
+        }
+        else if($(this).is("#exist_true")){
+            $("#answer_exist").val($(this).text());
+        }
+        else if($(this).is("#exist_false")) {
+            $("#answer_exist").val($(this).text());
+        }
+        else if($(this).is("#different_true")){
+            $("#different_solution").val($(this).text());
+        }
+        else if($(this).is("#different_false")){
+            $("#different_solution").val($(this).text());
+        }
+        else if($(this).is("#checked_true")){
+            $("#checked").val($(this).text());
+        }
+        else if($(this).is("#checked_false")){
+            $("#checked").val($(this).text());
+        }
+        Text_to_Json();
+    });
+
+    $('textarea').bind('input propertychange','textarea',function(){
+       Text_to_Json();
+    });
+    function Text_to_Json(){
+        text_student_solution_id = $("#student_solution_id").val();
+        text_reference_id = $("#ref_id").val();
+        text_student_solution_scan = $("#student_solution_scan").val();
+        text_rank = $("#rank").val();
+        text_empty = $("#empty").val();
+        text_answer_exist = $("#answer_exist").val();
+        text_different_solution = $("#different_solution").val();
+        text_text_content = $("#text_content").val();
+        text_scan_path = $("#scan_path").val();
+       	text_checked=$("#checked").val();
+    }
+
+    //添加以编辑文本框
+    $("#add").on('click', function () {
+        $(".student_solution_text").val("");
+        $("#soImg").attr('src','');
+        $("#soList").val("none");
+    });
+
+    //提交
+    $("#submit").on('click',function(){
+		text_label_complete="true";
+		let str_note = new String("\"\"");
+		text_note1 =str_note;
+		text_note2 = str_note;
+		text = "{" +"\"student_solution_id\":" +text_student_solution_id+
+            ",\n\"reference_id\":" +text_reference_id+
+            ",\n\"student_solution_scan\":"+text_student_solution_scan+
+            ",\n\"score\":{\"rank\":"+text_rank+
+            ",\n\"empty\":" +text_empty+
+            ",\n\"answer_exist\":"+text_answer_exist+
+            ",\n\"different_solution\":"+text_different_solution+
+            "\n},\n\"label_complete\":"+text_label_complete+
+            ",\n\"text_content\":"+text_text_content+
+			 ",\n\"checked\":"+text_checked+
+			",\n\"note1\":"+text_note1+ 
+			",\n\"note2\":"+text_note2+
+            ",\n\"scan_path\":"+text_scan_path+"}";
+        console.log(text);
+        editedJson  = JSON.parse(text)
+        console.log(editedJson);
+        let options = $('#refList').find('option:selected').val();
+        $.ajax({
+            type: "POST",
+            url:  "http://datagrading.learnable.ai/api/grading/v1/references/"+options+ "/solutions/"+editedJson.student_solution_id,
+            data: text,
+            headers: { 'Content-Type': 'application/json' },
+            success: success,
+            dataType:'json',
+        });
+
+        // let posting = $.post( "http://datagrading.learnable.ai/api/grading/v1/soerences/"+options, editedJson);
+        function success() {
+            alert("success");
+//            initSo();
+        };
+//        $(".student_solution_text").val("");
+//        $("#soImg").attr('src','');
+		$("#com_icon").css("display","initial");
+		
+    });
+
+    //删除
+    $("#delete").on('click',function () {
+        let options = $('#refList').find('option:selected').val();
+        // console.log(options);
+        // $("#soList option[value='+optionname+']").remove();
+        $.ajax({
+            type: "DELETE",
+            url:  "http://datagrading.learnable.ai/api/grading/v1/references/"+options+ "/solutions/"+editedJson.student_solution_id,
+            headers: { 'Content-Type': 'application/json' },
+            success : delete_success,
+        });
+        function delete_success() {
+            initSo();
+        }
+        $(".student_solution_text").val("");
+        $("#soImg").attr('src','');
+		$("#com_icon").css("display","none");
+        // $("#soList").val("please select");
+
+
+    })
+
+
+
+</script>
+</html>
