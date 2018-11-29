@@ -161,10 +161,16 @@ let promise_getSegmentationList = () => {
                 return;
             }
             let listSegIds = [];
-            body.rows.forEach(row => {
-                listSegIds.push(row.value);
-            })
-            resolve(listSegIds);
+            if (Array.isArray(body.rows)) {
+                body.rows.forEach(row => {
+                    listSegIds.push(row.value);
+                })
+                resolve(listSegIds);
+            } else {
+                console.log('promise_getSegmentationList: body rows is not array, error code < 34875928374 >');
+                console.log(body);
+                reject({ statusCode: 500, reason: 'Something error occurs, please contact the most beautiful Lan.' })
+            }
         })
     })
 }
