@@ -3,72 +3,91 @@ var api = require('../api');
 var connectMultiparty = require('connect-multiparty');
 
 var multiParty = connectMultiparty();
-var apiRoute = express.Router();
+var apiAuthRoute = express.Router();
+var apiGradingRoute = express.Router();
 
-apiRoute.get('/', (req, res) => {
-    res.status(200).send('succeed');
+
+apiAuthRoute.post('/auth', (req, res) => {
+    api.user_auth(req, res);
 })
 
-apiRoute.get('/references', (req, res) => {
+apiAuthRoute.get('/verify', (req, res) => {
+    api.user_verify(req, res);
+})
+
+
+apiGradingRoute.get('/', (req, res) => {
+    // api.authorize(req, res, (request, response) => {
+    response.status(200).send('succeed');
+    // response.status(200).send(request.headers['x-user']);
+    // })
+})
+
+apiGradingRoute.get('/references', (req, res) => {
     api.ref_getList(req, res);
 })
 
-apiRoute.get('/references/:id', (req, res) => {
+apiGradingRoute.get('/references/:id', (req, res) => {
     api.ref_getRef(req, res);
 })
 
-apiRoute.post('/references/:id', (req, res) => {
+apiGradingRoute.post('/references/:id', (req, res) => {
     api.ref_postRef(req, res);
 })
 
-apiRoute.delete('/references/:id', (req, res) => {
+apiGradingRoute.delete('/references/:id', (req, res) => {
     api.ref_deleteRef(req, res);
 })
 
-apiRoute.get('/references/:refId/solutions', (req, res) => {
+apiGradingRoute.get('/references/:refId/solutions', (req, res) => {
     api.solu_getList(req, res);
 })
 
-apiRoute.get('/references/:refId/solutions/:soluId', (req, res) => {
-    api.solu_getSolu(req, res);
+apiGradingRoute.get('/references/:refId/solutions/:soluId', (req, res) => {
+    api.authorize(req, res, (request, response) => {
+        api.solu_getSolu(request, response);
+    })
 })
 
-apiRoute.post('/references/:refId/solutions/:soluId', (req, res) => {
-    api.solu_postSolu(req, res);
+apiGradingRoute.post('/references/:refId/solutions/:soluId', (req, res) => {
+    api.authorize(req, res, (request, response) => {
+        api.solu_postSolu(request, response);
+    })
 })
 
-apiRoute.delete('/references/:refId/solutions/:soluId', (req, res) => {
+apiGradingRoute.delete('/references/:refId/solutions/:soluId', (req, res) => {
     api.solu_deleteSolu(req, res);
 })
 
-apiRoute.get('/ocr', (req, res) => {
+apiGradingRoute.get('/ocr', (req, res) => {
     api.lineseg_getList(req, res);
 })
 
-apiRoute.get('/ocr/:id', (req, res) => {
+apiGradingRoute.get('/ocr/:id', (req, res) => {
     api.lineseg_getSeg(req, res);
 })
 
-apiRoute.post('/ocr/:id', (req, res) => {
+apiGradingRoute.post('/ocr/:id', (req, res) => {
     api.lineseg_postSeg(req, res);
 })
 
-apiRoute.delete('/ocr/:id', (req, res) => {
+apiGradingRoute.delete('/ocr/:id', (req, res) => {
     api.lineseg_deleteSeg(req, res);
 })
 
-apiRoute.get('/ocr/:scan_id/images', (req, res) => {
+apiGradingRoute.get('/ocr/:scan_id/images', (req, res) => {
     api.image_getImages(req, res);
 })
 
-apiRoute.post('/ocr/:scan_id/images', multiParty, (req, res) => {
+apiGradingRoute.post('/ocr/:scan_id/images', multiParty, (req, res) => {
     api.image_postImages(req, res);
 })
 
-apiRoute.delete('/ocr/:scan_id/images/:image_id', (req, res) => {
+apiGradingRoute.delete('/ocr/:scan_id/images/:image_id', (req, res) => {
     api.image_deleteImages(req, res);
 })
 
 module.exports = {
-    apiRoute: apiRoute
+    apiAuthRoute: apiAuthRoute,
+    apiGradingRoute: apiGradingRoute
 }

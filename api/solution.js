@@ -64,6 +64,7 @@ let getSolution = (req, res) => {
         })
         return;
     }
+    let user = req.headers['x-user'];
     promise_getSolution_byRefIdAndSoluId(refId, soluId)
         .then(result => {
             if (typeof result == 'undefined') {
@@ -75,12 +76,42 @@ let getSolution = (req, res) => {
                 return;
             } else {
                 result = add_scanPath(result);
-                utils.printInfoLog('getSolution', JSON.stringify(result));
-                res.status(200).send({
-                    statusCode: 200,
-                    data: result
-                })
-                return;
+                let solution_id = result.id;
+                delete result.id;
+                promise_getScores(solution_id)
+                    .then(scores => {
+                        result.scores = [];
+                        if (user.type === 'admin') {
+                            scores.forEach(score => {
+                                // delete score.user;
+                                result.scores.push(score);
+                            })
+                        } else {
+                            for (let i = 0; i < scores.length; i++) {
+                                let score = scores[i];
+                                if (user.username === score.user) {
+                                    delete score.user;
+                                    result.scores.push(score);
+                                    break;
+                                }
+                            }
+                        }
+                        utils.printInfoLog('getSolution', JSON.stringify(result));
+                        res.status(200).send({
+                            statusCode: 200,
+                            data: result
+                        })
+                        return;
+                    })
+                    .catch(err => {
+                        utils.printErrLog('getSolution', JSON.stringify(err));
+                        if (typeof err.statusCode == 'undefined') {
+                            res.status(500).send(err);
+                        } else {
+                            res.status(err.statusCode).send(err);
+                        }
+                        return;
+                    })
             }
         })
         .catch(err => {
@@ -111,7 +142,12 @@ let postSolution = (req, res) => {
     //     return;
     // }
     let body = Object.assign({}, req.body, { student_solution_id: soluId, reference_id: refId });
-    promise_postSolution(body)
+    let user = req.headers['x-user'],
+        username;
+    if (typeof user !== 'undefined') {
+        username = user.username;
+    }
+    promise_postSolution(body, username)
         .then(result => {
             utils.printInfoLog('postSolution', JSON.stringify(result));
             res.status(result.statusCode).send(result);
@@ -201,6 +237,7 @@ let promise_getSolution_byRefIdAndSoluId = (refId, soluId) => {
             let solution;
             if (body.rows.length > 0) {
                 solution = body.rows[0].value;
+                solution.id = body.rows[0].id;
             }
             resolve(solution);
         })
@@ -230,7 +267,7 @@ let promise_getSolutionDoc_byRefIdAndSoluId = (refId, soluId) => {
     })
 }
 
-let promise_postSolution = (solution) => {
+let promise_postSolution = (solution, username) => {
     return new Promise((resolve, reject) => {
         let validation;
         validation = check_solution_parametersMissiong(solution);
@@ -248,9 +285,16 @@ let promise_postSolution = (solution) => {
             reject(validation);
             return;
         }
+        let solu_doc_id;
         promise_getSolutionDoc_byRefIdAndSoluId(solution['reference_id'], solution['student_solution_id'])
             .then(oldSolu => {
-                let body = fill_body(solution, solutionParameters);
+                let _solutionParameters = Object.keys(solutionParameters).reduce((obj, key) => {
+                    if (key !== 'score') {
+                        obj[key] = solutionParameters[key];
+                    }
+                    return obj;
+                }, {});
+                let body = fill_body(solution, _solutionParameters);
                 body['reference_id'] = solution['reference_id'];
                 body['student_solution_id'] = solution['student_solution_id'];
                 if (typeof oldSolu == 'undefined') {
@@ -261,6 +305,25 @@ let promise_postSolution = (solution) => {
                     body['doc_type'] = oldSolu['doc_type'];
                     body['_id'] = oldSolu['_id'];
                     body['_rev'] = oldSolu['_rev'];
+                    solu_doc_id = oldSolu['_id'];
+                }
+                return promise_save(body);
+            })
+            .then(() => {
+                return promise_getScoreDoc(solu_doc_id, username);
+            })
+            .then(oldScore => {
+                let body = fill_body(solution['score'], solutionParameters['score']);
+                if (typeof oldScore == 'undefined') {
+                    body['sid'] = solu_doc_id;
+                    body['doc_type'] = 'score';
+                    body['user'] = username;
+                } else {
+                    body['sid'] = oldScore['sid'];
+                    body['doc_type'] = oldScore['doc_type'];
+                    body['user'] = oldScore['user'];
+                    body['_id'] = oldScore['_id'];
+                    body['_rev'] = oldScore['_rev'];
                 }
                 return promise_save(body);
             })
@@ -448,6 +511,38 @@ let add_scanPath = (solution) => {
     solution.scan_path = solution['student_solution_scan'].replace(regex, config.STATIC_SOL_URL_PREFIX);
     // solution.scan_path = solution.scan_path.replace('http\:\/', 'http\:\/\/');
     return solution;
+}
+
+let promise_getScores = (soluId) => {
+    return new Promise((resolve, reject) => {
+        db.view('solution', 'score', { start_key: [soluId], end_key: [soluId, {}] }, (err, body) => {
+            if (err) {
+                reject({ statusCode: err.statusCode, reason: err.reason });
+                return;
+            }
+            let scores = body.rows.reduce((arr, row) => {
+                arr.push(row.value);
+                return arr;
+            }, []);
+            resolve(scores);
+        })
+    })
+}
+
+let promise_getScoreDoc = (soluId, username) => {
+    return new Promise((resolve, reject) => {
+        db.view('solution', 'score', { key: [soluId, username], include_docs: true }, (err, body) => {
+            if (err) {
+                reject({ statusCode: err.statusCode, reason: err.reason });
+                return;
+            }
+            if (body.rows.length === 0) {
+                resolve();
+            } else {
+                resolve(body.rows[0].doc);
+            }
+        })
+    })
 }
 
 module.exports = {

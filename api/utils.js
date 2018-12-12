@@ -1,9 +1,14 @@
 var nano = require('nano');
 
-let db = nano(process.env.COUCHDB_URL || 'http://127.0.0.1:8840').use('datagrading');
+let db = nano(process.env.COUCHDB_URL || 'http://couchdb2.learnable.ai').use('datagradingdup');
+let userDb = nano(process.env.COUCHDB_URL || 'http://couchdb2.learnable.ai').use('user');
 
 let getDB = () => {
     return db;
+}
+
+let getUserDB = () => {
+    return userDb;
 }
 
 let printInfoLog = (func, str) => {
@@ -20,6 +25,7 @@ let printErrLog = (func, str) => {
 
 module.exports = {
     getDB: getDB,
+    getUserDB: getUserDB,
     printInfoLog: printInfoLog,
     printErrLog: printErrLog
 }

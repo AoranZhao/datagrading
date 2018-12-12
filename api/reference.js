@@ -5,11 +5,9 @@ let fs = require('fs');
 let path = require('path');
 let config = require('../config');
 
-// let couchdb = utils.getDB();
 let db = utils.getDB();
 
 let referenceParameters = {
-    // 'reference_id': 'string',
     'question_body': 'string',
     'reference_solution': 'string',
     'reference_scan': 'string',

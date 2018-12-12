@@ -1,5 +1,6 @@
 var api = require('./api');
 
 module.exports = {
-    apiRoute: api.apiRoute
+    apiAuthRoute: api.apiAuthRoute,
+    apiGradingRoute: api.apiGradingRoute
 }
