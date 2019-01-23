@@ -44,6 +44,7 @@ app.use(STATIC_IMG_URL_PATH, express.static(STATIC_IMG_CONTAINER_DATA_PATH));
 
 app.use('/score', express.static('public/score'));
 app.use('/input', express.static('public/input'));
+app.use('/newversion', express.static('public/newversion'));
 
 app.use('/api/auth/v1', route.apiAuthRoute);
 app.use('/api/grading/v1', route.apiGradingRoute);

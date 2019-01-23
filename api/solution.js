@@ -96,7 +96,7 @@ let getSolution = (req, res) => {
                                 }
                             }
                         }
-                        utils.printInfoLog('getSolution', JSON.stringify(result));
+                        utils.printInfoLog('getSolution', `${user.username || user} - ${JSON.stringify(result)}`);
                         res.status(200).send({
                             statusCode: 200,
                             data: result
@@ -104,7 +104,7 @@ let getSolution = (req, res) => {
                         return;
                     })
                     .catch(err => {
-                        utils.printErrLog('getSolution', JSON.stringify(err));
+                        utils.printErrLog('getSolution', `${user.username || user} - ${JSON.stringify(err)}`);
                         if (typeof err.statusCode == 'undefined') {
                             res.status(500).send(err);
                         } else {
@@ -115,7 +115,7 @@ let getSolution = (req, res) => {
             }
         })
         .catch(err => {
-            utils.printErrLog('getSolution', JSON.stringify(err));
+            utils.printErrLog('getSolution', `${user.username || user} - ${JSON.stringify(err)}`);
             if (typeof err.statusCode == 'undefined') {
                 res.status(500).send(err);
             } else {
@@ -149,12 +149,12 @@ let postSolution = (req, res) => {
     }
     promise_postSolution(body, username)
         .then(result => {
-            utils.printInfoLog('postSolution', JSON.stringify(result));
+            utils.printInfoLog('postSolution', `${user.username || user} - ${JSON.stringify(result)}`);
             res.status(result.statusCode).send(result);
             return;
         })
         .catch(err => {
-            utils.printErrLog('postSolution', JSON.stringify(err));
+            utils.printErrLog('postSolution', `${user.username || user} - ${JSON.stringify(err)}`);
             if (typeof err.statusCode == 'undefined') {
                 res.status(500).send(err);
             } else {

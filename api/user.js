@@ -25,6 +25,7 @@ let auth = (req, res) => {
         .then(user => {
             delete user.password;
             user.token = encode_user(user);
+            utils.printInfoLog('auth', `login success - ${JSON.stringify(user)}`);
             res.status(200).send({
                 statusCode: 200,
                 data: user
@@ -34,6 +35,7 @@ let auth = (req, res) => {
         .catch(err => {
             let statusCode = (typeof err.statusCode != 'undefined') ? err.statusCode : 500,
                 reason = (typeof err.statusCode != 'undefined') ? err.reason : err;
+            utils.printErrLog("auth", reason);
             res.status(err.statusCode || 500)
                 .send({
                     statusCode: statusCode,

@@ -1,7 +1,7 @@
 var nano = require('nano');
 
-let db = nano(process.env.COUCHDB_URL || 'http://couchdb2.learnable.ai').use('datagradingdup');
-let userDb = nano(process.env.COUCHDB_URL || 'http://couchdb2.learnable.ai').use('user');
+let db = nano(process.env.COUCHDB_URL || 'http://couchdb2.learnable.ai').use('datagradingtest');
+let userDb = nano(process.env.COUCHDB_URL || 'http://couchdb2.learnable.ai').use('usertest');
 
 let getDB = () => {
     return db;
