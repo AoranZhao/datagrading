@@ -32,8 +32,15 @@ let lineSegmentationParameters = {
 }
 
 let getSegmentationList = (req, res) => {
-    let amount = (typeof req.query.amount === 'number' && req.query.amount >= 0) ? Math.ceil(req.query.amount) : 100,
-        page = (typeof req.query.page === 'number' && req.query.page > 0) ? Math.ceil(req.query.page) : 1;
+    let default_amount = 100, default_page = 1, amount = default_amount, page = default_page;
+    try {
+        amount = (typeof req.query.amount !== 'undefined') ? parseInt(req.query.amount) : amount;
+        page = (typeof req.query.page !== 'undefined') ? parseInt(req.query.page) : page;
+    } catch (err) {
+        console.log(err);
+    }
+    amount = (amount >= 0) ? amount : default_amount;
+    page = (page > 0) ? page : default_page;
     promise_getSegmentationList(page, amount)
         .then(result => {
             utils.printInfoLog('getSegmentationList', `success, get ${result.length} items`);
