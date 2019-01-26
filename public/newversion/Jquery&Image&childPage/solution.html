@@ -327,14 +327,14 @@
             $("#rank").val('');
             $("#empty").val('');
             $("#answer_exist").val('');
-            $("#student_solution_id").val('');
-            $("#ref_id").val('');
-            $("#student_solution_scan").val('');
+            $("#student_solution_id").val(JSON.stringify((e.student_solution_id)));
+            $("#ref_id").val(JSON.stringify((e.reference_id)));
+            $("#student_solution_scan").val(JSON.stringify(e.student_solution_scan));
             $("#different_solution").val('');
-            $("#label_complete").val('');
-            $("#text_content").val('');
-            $("#scan_path").val('');
-            $("#checked").val('');
+            $("#label_complete").val(JSON.stringify(e.label_complete));
+            $("#text_content").val(JSON.stringify(e.text_content));
+            $("#scan_path").val(JSON.stringify(e.scan_path));
+            $("#checked").val(JSON.stringify(e.checked));
         }
 
     };
@@ -365,6 +365,7 @@
                     $("#other_scores").val('');
                 }
             }
+			console.log(scan_path);
             let imagesrc = soData.scan_path;
             let imagestrsrc =JSON.stringify(imagesrc);
             let fimagesrc = imagestrsrc.replace('"','').replace('.png"','.png');

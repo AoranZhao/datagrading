@@ -72,45 +72,52 @@ apiGradingRoute.delete('/references/:refId/solutions/:soluId', (req, res) => {
 })
 
 apiGradingRoute.get('/ocr', (req, res) => {
-    api.authorize(req, res, (request, response) => {
-        api.lineseg_getList(request, response);
-    });
+    // api.authorize(req, res, (request, response) => {
+    //     api.lineseg_getList(request, response);
+    // });
+    api.lineseg_getList(req, res);
 })
 
 apiGradingRoute.get('/ocr/:id', (req, res) => {
-    api.authorize(req, res, (request, response) => {
-        api.lineseg_getSeg(request, response);
-    });
+    // api.authorize(req, res, (request, response) => {
+    //     api.lineseg_getSeg(request, response);
+    // });
+    api.lineseg_getSeg(req, res);
 })
 
 apiGradingRoute.post('/ocr/:id', (req, res) => {
-    api.authorize(req, res, (request, response) => {
-        api.lineseg_postSeg(request, response);
-    });
+    // api.authorize(req, res, (request, response) => {
+    //     api.lineseg_postSeg(request, response);
+    // });
+    api.lineseg_postSeg(req, res);
 })
 
 apiGradingRoute.delete('/ocr/:id', (req, res) => {
-    api.authorize(req, res, (request, response) => {
-        api.lineseg_deleteSeg(request, response);
-    });
+    // api.authorize(req, res, (request, response) => {
+    //     api.lineseg_deleteSeg(request, response);
+    // });
+    api.lineseg_deleteSeg(req, res);
 })
 
 apiGradingRoute.get('/ocr/:scan_id/images', (req, res) => {
-    api.authorize(req, res, (request, response) => {
-        api.image_getImages(request, response);
-    });
+    // api.authorize(req, res, (request, response) => {
+    //     api.image_getImages(request, response);
+    // });
+    api.image_getImages(req, res);
 })
 
 apiGradingRoute.post('/ocr/:scan_id/images', multiParty, (req, res) => {
-    api.authorize(req, res, (request, response) => {
-        api.image_postImages(request, response);
-    });
+    // api.authorize(req, res, (request, response) => {
+    //     api.image_postImages(request, response);
+    // });
+    api.image_postImages(req, res);
 })
 
 apiGradingRoute.delete('/ocr/:scan_id/images/:image_id', (req, res) => {
-    api.authorize(req, res, (request, response) => {
-        api.image_deleteImages(request, response);
-    });
+    // api.authorize(req, res, (request, response) => {
+    //     api.image_deleteImages(request, response);
+    // });
+    api.image_deleteImages(req, res);
 })
 
 module.exports = {
