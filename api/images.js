@@ -195,7 +195,8 @@ let promise_save = (scan_id, images) => {
 }
 
 let convert_scanPath = (filename) => {
-    return path.join(config.STATIC_IMG_URL_PREFIX, filename);
+    return `${config.STATIC_IMG_URL_PREFIX}/${filename}`;
+    // return path.join(config.STATIC_IMG_URL_PREFIX, filename);
 }
 
 module.exports = {
