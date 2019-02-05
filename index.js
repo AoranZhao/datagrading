@@ -25,6 +25,7 @@ const STATIC_IMG_URL_PATH = config.STATIC_IMG_URL_PATH;
 app.use(bodyParser.json({
     type: 'application/json'
 }))
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     type: 'application/x-www-form-urlencoded',
     extended: true

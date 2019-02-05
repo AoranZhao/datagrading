@@ -23,7 +23,14 @@ let getImages = (req, res) => {
 }
 
 let postImages = (req, res) => {
-    promise_postImages(req.params.scan_id, req.files.images)
+    let data = [];
+    try {
+        data = JSON.parse(req.body.data || []);
+    } catch (err) {
+        res.status(500).send({ statusCode: 500, reason: err.message || err });
+        return;
+    }
+    promise_postImages(req.params.scan_id, req.files.images, data)
         .then(result => {
             res.status(200).send({
                 statusCode: 200,
@@ -71,6 +78,8 @@ let promise_getImages = (scan_id) => {
                             image_id: row.value.id,
                             original_filename: row.value.original_filename,
                             mime: row.value.mime,
+                            note1: row.value.note1,
+                            note2: row.value.note2,
                             scan_path: convert_scanPath(row.value.filename)
                         });
                     })
@@ -83,7 +92,7 @@ let promise_getImages = (scan_id) => {
     })
 }
 
-let promise_postImages = (scan_id, images) => {
+let promise_postImages = (scan_id, images, data) => {
     return new Promise((resolve, reject) => {
         if (typeof scan_id === 'undefined') {
             reject({ statusCode: 404, reason: "not find scan id in url, please check your request." });
@@ -94,7 +103,19 @@ let promise_postImages = (scan_id, images) => {
                 if (!Array.isArray(images)) {
                     images = [images];
                 }
-                return promise_save(scan_id, images);
+                if (!Array.isArray(data)) {
+                    data = [data];
+                }
+                let imagesWithData = images.reduce((arr, image, index) => {
+                    arr.push({
+                        image: image,
+                        data: (data.length > index) ? data[index] : {}
+                    })
+                    return arr;
+                }, []);
+                // console.log(imagesWithData);
+                // resolve();
+                return promise_save(scan_id, imagesWithData);
             })
             .then(() => {
                 resolve();
@@ -169,16 +190,19 @@ let promise_checkScanId = (scan_id) => {
 let promise_save = (scan_id, images) => {
     return new Promise((resolve, reject) => {
         let objs = images.reduce((arr, image) => {
-            let paths = image.path.split('/');
+            let theImage = image.image, theData = image.data;
+            let paths = theImage.path.split('/');
             let newPath = path.join(config.STATIC_IMG_CONTAINER_DATA_PATH, paths[paths.length - 1]);
             // fs.renameSync(image.path, newPath);
-            fs.copyFileSync(image.path, newPath);
-            fs.unlinkSync(image.path);
+            fs.copyFileSync(theImage.path, newPath);
+            fs.unlinkSync(theImage.path);
             arr.push({
                 scan_id: scan_id,
                 filename: paths[paths.length - 1],
-                type: image.type,
-                originalFilename: image.originalFilename,
+                type: theImage.type,
+                originalFilename: theImage.originalFilename,
+                note1: theData.note1 || "",
+                note2: theData.note2 || "",
                 created_date: new Date().toISOString(),
                 doc_type: 'ocr_image'
             })
