@@ -646,7 +646,7 @@
 			let img = ctx.getImageData(0, 0, original_width, original_height);
 			let imgData = img.data;
 			for (let i = 0; i < imgData.length; i += 4) {
-				if (imgData[i] == r && imgData[i + 1] == g && imgData[i + 2] == b) {
+				if ((imgData[i] == r && imgData[i + 1] == g && imgData[i + 2] == b) || (imgData[i] == 0 && imgData[i + 1] == 255 && imgData[i + 2] == 0)) {
 					let y_cor = (i / 4) / original_width;
 					let x_cor = (i / 4) % original_width;
 					if (x_cor < x_left) {
