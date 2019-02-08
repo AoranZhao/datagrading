@@ -33,14 +33,19 @@ let lineSegmentationParameters = {
 
 let getSegmentationList = (req, res) => {
     let default_amount = 100, default_page = 1, amount = default_amount, page = default_page;
-    try {
-        amount = (typeof req.query.amount !== 'undefined') ? parseInt(req.query.amount) : amount;
-        page = (typeof req.query.page !== 'undefined') ? parseInt(req.query.page) : page;
-    } catch (err) {
-        console.log(err);
+    if (typeof req.query.amount !== 'undefined' && req.query.amount == 'all') {
+        amount = undefined;
+        page = undefined;
+    } else {
+        try {
+            amount = (typeof req.query.amount !== 'undefined') ? parseInt(req.query.amount) : amount;
+            page = (typeof req.query.page !== 'undefined') ? parseInt(req.query.page) : page;
+        } catch (err) {
+            console.log(err);
+        }
+        amount = (amount >= 0) ? amount : default_amount;
+        page = (page > 0) ? page : default_page;
     }
-    amount = (amount >= 0) ? amount : default_amount;
-    page = (page > 0) ? page : default_page;
     promise_getSegmentationList(page, amount)
         .then(result => {
             utils.printInfoLog('getSegmentationList', `success, get ${result.length} items`);
@@ -164,7 +169,11 @@ let deleteSegmentation = (req, res) => {
 let promise_getSegmentationList = (page, amount) => {
     // let db = couchdb.use('datagrading');
     return new Promise((resolve, reject) => {
-        db.view('linesegmentation', 'listLineSegIds', { skip: (page - 1) * amount, limit: amount }, (err, body) => {
+        let query = {};
+        if (typeof page !== 'undefined' && typeof amount !== 'undefined') {
+            query = { skip: (page - 1) * amount, limit: amount };
+        }
+        db.view('linesegmentation', 'listLineSegIds', query, (err, body) => {
             if (err) {
                 reject({ statusCode: err.statusCode, reason: err.reason });
                 return;
