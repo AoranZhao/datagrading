@@ -6,7 +6,7 @@ html body div {
 	font-size: 14px;
 }
 textarea{
-	background-color: aquamarine;
+	background-color: #DCF5FA;
 	font-size: 18px;
 	resize: none;
 }
@@ -90,7 +90,7 @@ textarea{
 .floating{
 	position: fixed;
 	top:100px;
-	left:1000px;
+	left:50vw;
 	right:0;
 	height:600px;
 	z-index: 100;
