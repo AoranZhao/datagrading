@@ -1,0 +1,97 @@
+@charset "UTF-8";
+/* CSS Document */
+html body div {
+	margin: 0;
+	padding: 0;
+	font-size: 14px;
+}
+textarea{
+	background-color: aquamarine;
+	font-size: 18px;
+	resize: none;
+}
+
+#text-content-area{
+	height: 400px;
+	font-size: 18px; 
+}
+
+#text{
+	height: 100%;
+	width: 100%;
+	line-height: 1.5;
+	font-size: 18px; 
+}
+
+#left{
+	height: 100%;
+	line-height: 1.5;
+	font-size: 18px; 
+	overflow-y: scroll
+}
+
+.checked-btn{
+	display: inline-block;
+}
+.layer_btn{
+		position: absolute;
+		width: 100px;
+		height: 100px;
+		top: 60px;
+		left: 1200px;
+	}
+.color{
+		width:90px;
+		margin-left: 2px;
+	}
+.canvas{
+		overflow-y: scroll;
+		background: gray;
+		max-height: 100vh;
+
+	}
+.canvas_layers{
+	overflow-Y: auto;
+}
+#arc{
+		position: absolute;
+		left:10000px;
+		top:10000px;
+		width:50px;
+		height:50px;
+		border-radius: 25px;
+		border-width: 1px;
+		background-color: rgba(0,0,0,0.4);
+	}
+
+.block{
+	display: block;
+}
+
+.first-row{
+	display: flex;
+	height: 30px;
+}
+
+.first-row select{
+	margin-left: 20px;
+	width: 80px;
+}
+
+.first-row button{
+	margin-left: 20px;
+	width: 100px;
+}
+
+.two-columns{
+	display: flex;
+}
+
+.floating{
+	position: fixed;
+	top:100px;
+	left:1000px;
+	right:0;
+	height:600px;
+	z-index: 100;
+}
