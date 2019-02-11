@@ -1,59 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Edit Reference</title>
     <style>
-        div{
+        div {
             margin: 0;
             padding: 0;
         }
-        body{
-            background:url(1.png) no-repeat;
+
+        body {
+            background: url(1.png) no-repeat;
             /*height: 1152px ;*/
-            background-size:cover;
+            background-size: cover;
         }
-        .buttons{
-            width:1300px; height: 70px;
-            position: relative;left:0; top:30px; right:0; bottom: 0; margin: auto;
+
+        .buttons {
+            width: 1300px;
+            height: 70px;
+            position: relative;
+            left: 0;
+            top: 30px;
+            right: 0;
+            bottom: 0;
+            margin: auto;
             font-size: 20px;
-            font-family: Helvetica; color:#D0E2CE;
-        }
-        .btn{
             font-family: Helvetica;
-            font-size:16px;
-            background-color:	#E4EDE3 ;
+            color: #D0E2CE;
+        }
+
+        .btn {
+            font-family: Helvetica;
+            font-size: 16px;
+            background-color: #E4EDE3;
             border-radius: 7px;
         }
-        .btn-font{
+
+        .btn-font {
             font-family: Helvetica;
-            font-size:16px;
-            background-color:	#E4EDE3 ;
+            font-size: 16px;
+            background-color: #E4EDE3;
             border-radius: 28px;
             position: relative;
             top: 5px;
         }
-        .btn-post{
+
+        .btn-post {
             font-family: Helvetica;
-            font-size:18px;
-            background-color:	#E4EDE3 ;
+            font-size: 18px;
+            background-color: #E4EDE3;
             border-radius: 10px;
             position: relative;
-            top:15px;
+            top: 15px;
         }
-        .txt{
-            width:1300px;height:538px;
-            position: relative;left:0; top:80px; right:0; bottom: 0; margin: auto;
+
+        .txt {
+            width: 1300px;
+            height: 538px;
+            position: relative;
+            left: 0;
+            top: 80px;
+            right: 0;
+            bottom: 0;
+            margin: auto;
         }
-        .txt span{
+
+        .txt span {
             margin: 0;
             padding: 0;
-            font-family: Helvetica; color: #E4EDE3;
+            font-family: Helvetica;
+            color: #E4EDE3;
             font-size: 18px;
             position: relative;
             float: left;
         }
-        .txt textarea{
+
+        .txt textarea {
             margin-left: 3px;
             padding: 1px;
             left: auto;
@@ -67,32 +90,36 @@
             resize: none;
             border-radius: 4px;
         }
-        .txt img{
-            height:680px;
+
+        .txt img {
+            height: 680px;
             position: relative;
             float: left;
             margin-left: 400px;
             border-radius: 6px;
         }
-        .txt div{
+
+        .txt div {
             position: relative;
             width: 200px;
-            float:left;
+            float: left;
         }
-
     </style>
 </head>
+
 <body background="image/1.png">
-	<div id="com_icon" style="width: 100px;height: 100px;border-radius: 50px;position: absolute;left: 900px;top:60px;display: none"><img src="Completed.png" style="width:70px;height: 70px"></div>
+    <div id="com_icon"
+        style="width: 100px;height: 100px;border-radius: 50px;position: absolute;left: 900px;top:60px;display: none">
+        <img src="Completed.png" style="width:70px;height: 70px"></div>
     <div>
         <div class="buttons">
-        <select class="btn" id="refList"  name="referenceList"></select> or
-        <button class="btn" id="add">AddNew</button></br>
-        <button class="btn-font" id="plus">font-size+</button>
-        <button class="btn-font" id="min">font-size-</button></br>
-        <button class="btn-post" id="submit">Submit</button>
-        <button class="btn-post" id="delete">Delete</button></br>
-        <hr style=" position: relative; top: 10px"  width="100%" color="#E4EDE3" SIZE="1">
+            <select class="btn" id="refList" name="referenceList"></select> or
+            <button class="btn" id="add">AddNew</button></br>
+            <button class="btn-font" id="plus">font-size+</button>
+            <button class="btn-font" id="min">font-size-</button></br>
+            <button class="btn-post" id="submit">Submit</button>
+            <button class="btn-post" id="delete" hidden>Delete</button></br>
+            <hr style=" position: relative; top: 10px" width="100%" color="#E4EDE3" SIZE="1">
         </div>
     </div>
     <div class="txt">
@@ -106,25 +133,27 @@
             <span>reference_solution:</span>
             <textarea id="ref_solution" spellcheck="false" style="width:500px; height:90px"></textarea></br></br>
 
-			<span>text_content:</span>
-            <textarea id="text_content" spellcheck="false" ></textarea></br></br>
+            <span>text_content:</span>
+            <textarea id="text_content" spellcheck="false"></textarea></br></br>
 
             <span style="display: none">reference_scan:</span>
             <textarea id="ref_scan" spellcheck="false" style="display: none"></textarea></br></br>
 
             <span style="display: none">question_body_region:</span>
-            <textarea id="question_body_region" spellcheck="false" style="width:380px; height: 60px; display: none"></textarea></br></br>
+            <textarea id="question_body_region" spellcheck="false"
+                style="width:380px; height: 60px; display: none"></textarea></br></br>
 
             <span style="display:none">student_solution_region:</span>
-            <textarea id="student_solution_region" spellcheck="false" style="width:380px; height: 60px; display: none"></textarea></br></br>
+            <textarea id="student_solution_region" spellcheck="false"
+                style="width:380px; height: 60px; display: none"></textarea></br></br>
 
             <span>label_complete:</span>
-            <textarea id="label_complete" spellcheck="false"  readonly="readonly"></textarea></br></br>
+            <textarea id="label_complete" spellcheck="false" readonly="readonly"></textarea></br></br>
 
             <span style=>checked:</span>
-			<button class="btns" id="true" >true</button>
-			<button class="btns" id="false" >false</button>
-            <textarea id="checked" spellcheck="false" ></textarea></br></br>
+            <button class="btns" id="true">true</button>
+            <button class="btns" id="false">false</button>
+            <textarea id="checked" spellcheck="false"></textarea></br></br>
             <span style="display: none">note1:</span>
             <textarea id="note1" spellcheck="false" style="width: 450px ; display: none"></textarea></br></br>
             <span style="display: none">note2:</span>
@@ -132,194 +161,206 @@
 
             <span style="display: none">scan_path:</span>
             <textarea id="scan_path" spellcheck="false" style="width: 450px ; display: none"></textarea>
-            </div>
-        <img id="soImg"/>
+        </div>
+        <img id="soImg" />
     </div>
 
-<script src="jquery-3.3.1.min.js"></script>
-<script>
-    let editedJson = null, text_reference_id, text_question_body, text_ref_solution, text_reference_scan, text_question_body_region,
-    text_student_solution_region, text_label_complete, text_text_content, text_scan_path, text_checked,text_note1,text_note2,text, size=0, refData;
+    <script src="jquery-3.3.1.min.js"></script>
+    <script>
+        let variables = window.location.search;
+        let index = variables.indexOf('&');
+        let variable = variables.slice(5, index);
+        let user_type = variables.slice(index + 6);
+        console.log(user_type);
+        console.log(variable);
+        let editedJson = null, text_reference_id, text_question_body, text_ref_solution, text_reference_scan, text_question_body_region,
+            text_student_solution_region, text_label_complete, text_text_content, text_scan_path, text_checked, text_note1, text_note2, text, size = 0, refData;
 
-    //字体大小
-    let thisEle = $("textarea").css("font-size");
-    let textFontSize = parseFloat(thisEle, 10);
-    $("#plus").on('click', function(){
-        size += 2;
-        $("textarea").css("font-size",  textFontSize + size );
-        $("textarea").css("line-height", 1.5 );
-    });
-    $("#min").on('click', function(){
-        size -= 2;
-        $("textarea").css("font-size",  textFontSize + size );
-        $("textarea").css("line-height", 1.5 );
-    });
+        //字体大小
+        let thisEle = $("textarea").css("font-size");
+        let textFontSize = parseFloat(thisEle, 10);
+        $("#plus").on('click', function () {
+            size += 2;
+            $("textarea").css("font-size", textFontSize + size);
+            $("textarea").css("line-height", 1.5);
+        });
+        $("#min").on('click', function () {
+            size -= 2;
+            $("textarea").css("font-size", textFontSize + size);
+            $("textarea").css("line-height", 1.5);
+        });
 
-    init();
+        init();
 
-    //初始化select
-    function init(){
-        $.get( "http://datagrading.learnable.ai/api/grading/v1/references/", function( data ) {
-            console.log(data);
-            console.log("called")
-            let refData = data.data ;
-            let strHTMLArray = [] ;
-            strHTMLArray.length = 0 ;
-            $("#refList").html(strHTMLArray.join(''));
-            strHTMLArray.push('<option value="please select">'+"请选择"+"</option>>");
-            // console.log(refData);
-            for (let i = 0; i<refData.length; i++ ){
-                let refName = refData[i];
-                strHTMLArray.push('<option value="'+refName+'">'+refName+'</option>>');
+        //初始化select
+        function init() {
+            $.ajaxSetup({
+                headers: { 'Content-Type': 'application/json', 'x-token': variable }
+            });
+            $.get("http://datagrading.learnable.ai/api/grading/v1/references/", function (data) {
+                console.log(data);
+                console.log("called")
+                let refData = data.data;
+                let strHTMLArray = [];
+                strHTMLArray.length = 0;
+                $("#refList").html(strHTMLArray.join(''));
+                strHTMLArray.push('<option value="please select">' + "请选择" + "</option>>");
+                // console.log(refData);
+                for (let i = 0; i < refData.length; i++) {
+                    let refName = refData[i];
+                    strHTMLArray.push('<option value="' + refName + '">' + refName + '</option>>');
+                }
+                strHTMLArray.push('<option value="none">' + "新建选项" + "</option>>");
+                // console.log(strHTMLArray);
+                // $("#refList").find("option:selected").text("");
+                // $("#refList").empty();
+                // console.log($('#refList'));
+                $("#refList").html(strHTMLArray.join(''));
+            });
+        }
+
+        //文本投射在文本框
+        function inputText(e) {
+            $("#ref_id").val(JSON.stringify((e.reference_id)));
+            $("#question_body").val(JSON.stringify(e.question_body));
+            $("#ref_solution").val(JSON.stringify(e.reference_solution));
+            $("#ref_scan").val(JSON.stringify(e.reference_scan));
+            $("#question_body_region").val(JSON.stringify(e.question_body_region));
+            $("#student_solution_region").val(JSON.stringify(e.student_solution_region));
+            $("#label_complete").val(JSON.stringify(e.label_complete));
+            $("#text_content").val(JSON.stringify(e.text_content));
+            $("#checked").val(JSON.stringify(e.checked));
+            $("#scan_path").val(JSON.stringify(e.scan_path));
+        }
+
+        function getDetail(listnum) {
+            $('textarea').val("");
+            $("#soImg").attr('src', '');
+            $.ajaxSetup({
+                headers: { 'Content-Type': 'application/json', 'x-token': variable }
+            });
+            $.get("http://datagrading.learnable.ai/api/grading/v1/references/" + listnum, function (data) {
+                refData = data.data;
+                if (refData.label_complete == true) {
+                    $("#com_icon").css("display", "initial");
+                }
+                else {
+                    $("#com_icon").css("display", "none");
+                }
+                inputText(refData);
+                let imagesrc = refData.scan_path;
+                let imagestrsrc = JSON.stringify(imagesrc);
+                let fimagesrc = imagestrsrc.replace('"', '').replace('.png"', '.png');
+                $("#soImg").attr('src', fimagesrc);
+            });
+        }
+
+        //获取对应文本并投射在文本框
+        $("#refList").on('change', function () {
+            let options = $('#refList').find('option:selected').val();
+            if (options != undefined) {
+                getDetail(options);
             }
-            strHTMLArray.push('<option value="none">'+"新建选项"+"</option>>");
-            // console.log(strHTMLArray);
-            // $("#refList").find("option:selected").text("");
-            // $("#refList").empty();
-            // console.log($('#refList'));
-            $("#refList").html(strHTMLArray.join(''));
         });
-    }
 
-    //文本投射在文本框
-    function inputText(e) {
-        $("#ref_id").val(JSON.stringify((e.reference_id)));
-        $("#question_body").val(JSON.stringify(e.question_body));
-        $("#ref_solution").val(JSON.stringify(e.reference_solution));
-        $("#ref_scan").val(JSON.stringify(e.reference_scan));
-        $("#question_body_region").val(JSON.stringify(e.question_body_region));
-        $("#student_solution_region").val(JSON.stringify(e.student_solution_region));
-        $("#label_complete").val(JSON.stringify(e.label_complete));
-        $("#text_content").val(JSON.stringify(e.text_content));
-		$("#checked").val(JSON.stringify(e.checked));
-        $("#scan_path").val(JSON.stringify(e.scan_path));
-    }
 
-    function getDetail(listnum){
-        $('textarea').val("");
-        $("#soImg").attr('src','');
-        // console.log("http://datagrading.learnable.ai/api/grading/v1/referefnces/"+listnum);
-        $.get( "http://datagrading.learnable.ai/api/grading/v1/references/"+listnum, function( data ) {
-            refData = data.data;
-           if(refData.label_complete==true){
-				$("#com_icon").css("display","initial");
-			}
-			else{
-				$("#com_icon").css("display","none");
-			}
-            inputText(refData);
-            let imagesrc = refData.scan_path;
-            let imagestrsrc = JSON.stringify(imagesrc);
-            let fimagesrc = "http://" + imagestrsrc.replace('"', '').replace('.png"', '.png');
-            $("#soImg").attr('src', fimagesrc);
-        });
-    }
-
-    //获取对应文本并投射在文本框
-    $("#refList").on('change',function () {
-        let options = $('#refList').find('option:selected').val();
-        if(options != undefined) {
-            getDetail(options);
+        //实时获取文本框内容并转化为JSON
+        function gettext() {
+            text_reference_id = $("#ref_id").val();
+            text_question_body = $("#question_body").val();
+            text_ref_solution = $("#ref_solution").val();
+            text_reference_scan = $("#ref_scan").val();
+            text_question_body_region = $("#question_body_region").val();
+            text_student_solution_region = $("#student_solution_region").val();
+            //        text_label_complete = $("#label_complete").val();
+            text_text_content = $("#text_content").val();
+            text_checked = $("#checked").val();
+            text_scan_path = $("#scan_path").val();
         }
-    });
-
-
-    //实时获取文本框内容并转化为JSON
-	function gettext(){
-		text_reference_id = $("#ref_id").val();
-        text_question_body = $("#question_body").val();
-        text_ref_solution = $("#ref_solution").val();
-        text_reference_scan = $("#ref_scan").val();
-        text_question_body_region = $("#question_body_region").val();
-        text_student_solution_region = $("#student_solution_region").val();
-//        text_label_complete = $("#label_complete").val();
-        text_text_content = $("#text_content").val();
-		text_checked = $("#checked").val();
-        text_scan_path = $("#scan_path").val();
-	}
-    $("textarea").bind('input propertychange','textarea',function(){
-        gettext();
-    });
-
-    //添加以编辑文本框
-    $("#add").on('click', function () {
-        $('textarea').val("");
-        $("#soImg").attr('src','');
-        $("#refList").val("none");
-    });
-
-	//checked 切换
-		$("#true").on('click',function(){
-		gettext();
-		$("#checked").val("true");
-		text_checked = $("#checked").val();
-	})
-	$("#false").on('click',function(){
-		gettext();
-		$("#checked").val("false");
-		text_checked = $("#checked").val();
-	})
-    //提交
-    $("#submit").on('click',function(){
-		text_label_complete = "true";
-		let str_note = new String("\"\"");
-		text_note1 =str_note;
-		text_note2 = str_note;
-		console.log(text_label_complete);
-	    text = "{\"reference_id\":" +text_reference_id+
-            ",\n\"question_body\":"+text_question_body+
-            ",\n\"reference_solution\":" +text_ref_solution+
-            ",\n\"reference_scan\":"+text_reference_scan+
-            ",\n\"question_body_region\":"+text_question_body_region+
-            ",\n\"student_solution_region\":"+text_student_solution_region+
-            ",\n\"label_complete\":"+text_label_complete+
-            ",\n\"text_content\":"+text_text_content+
-			 ",\n\"checked\":"+text_checked+
-			",\n\"note1\":"+text_note1+ 
-			",\n\"note2\":"+text_note2+
-            ",\n\"scan_path\":"+text_scan_path+"}";
-        console.log(text);
-        editedJson  = JSON.parse(text);
-        console.log(editedJson);
-        $.ajax({
-            type: "POST",
-            url:  "http://datagrading.learnable.ai/api/grading/v1/references/"+editedJson.reference_id,
-            data: text,
-            headers: { 'Content-Type': 'application/json' },
-            success: success,
-            dataType:'json',
-         });
-
-        // let posting = $.post( "http://datagrading.learnable.ai/api/grading/v1/references/"+options, editedJson);
-       function success() {
-            alert("success");
-//            init();
-        };
-//       $('textarea').val("");
-//       $("#soImg").attr('src','');
-		$("#com_icon").css("display","initial");
-    });
-
-    //删除
-    $("#delete").on('click',function () {
-        let options = $('#refList').find('option:selected').val();
-        // console.log(options);
-        // $("#refList option[value='+optionname+']").remove();
-        $.ajax({
-            type: "DELETE",
-            url:  "http://datagrading.learnable.ai/api/grading/v1/references/"+options,
-            headers: { 'Content-Type': 'application/json' },
-            success : delete_success,
+        $("textarea").bind('input propertychange', 'textarea', function () {
+            gettext();
         });
-        function delete_success() {
-            init();
-        }
-        // init();
-        $('textarea').val("");
-        $("#soImg").attr('src','');
-		$("#com_icon").css("display","none");
 
-    })
-</script>
+        //添加以编辑文本框
+        $("#add").on('click', function () {
+            $('textarea').val("");
+            $("#soImg").attr('src', '');
+            $("#refList").val("none");
+        });
+
+        //checked 切换
+        $("#true").on('click', function () {
+            gettext();
+            $("#checked").val("true");
+            text_checked = $("#checked").val();
+        })
+        $("#false").on('click', function () {
+            gettext();
+            $("#checked").val("false");
+            text_checked = $("#checked").val();
+        })
+        //提交
+        $("#submit").on('click', function () {
+            text_label_complete = "true";
+            let str_note = new String("\"\"");
+            text_note1 = str_note;
+            text_note2 = str_note;
+            console.log(text_label_complete);
+            text = "{\"reference_id\":" + text_reference_id +
+                ",\n\"question_body\":" + text_question_body +
+                ",\n\"reference_solution\":" + text_ref_solution +
+                ",\n\"reference_scan\":" + text_reference_scan +
+                ",\n\"question_body_region\":" + text_question_body_region +
+                ",\n\"student_solution_region\":" + text_student_solution_region +
+                ",\n\"label_complete\":" + text_label_complete +
+                ",\n\"text_content\":" + text_text_content +
+                ",\n\"checked\":" + text_checked +
+                ",\n\"note1\":" + text_note1 +
+                ",\n\"note2\":" + text_note2 +
+                ",\n\"scan_path\":" + text_scan_path + "}";
+            console.log(text);
+            editedJson = JSON.parse(text);
+            console.log(editedJson);
+            $.ajax({
+                type: "POST",
+                url: "http://datagrading.learnable.ai/api/grading/v1/references/" + editedJson.reference_id,
+                data: text,
+                headers: { 'Content-Type': 'application/json', 'x-token': variable },
+                success: success,
+                dataType: 'json',
+            });
+
+            // let posting = $.post( "http://datagrading.learnable.ai/api/grading/v1/references/"+options, editedJson);
+            function success() {
+                alert("success");
+                //            init();
+            };
+            //       $('textarea').val("");
+            //       $("#soImg").attr('src','');
+            $("#com_icon").css("display", "initial");
+        });
+
+        //删除
+        $("#delete").on('click', function () {
+            let options = $('#refList').find('option:selected').val();
+            // console.log(options);
+            // $("#refList option[value='+optionname+']").remove();
+            $.ajax({
+                type: "DELETE",
+                url: "http://datagrading.learnable.ai/api/grading/v1/references/" + options,
+                headers: { 'Content-Type': 'application/json' },
+                success: delete_success,
+            });
+            function delete_success() {
+                init();
+            }
+            // init();
+            $('textarea').val("");
+            $("#soImg").attr('src', '');
+            $("#com_icon").css("display", "none");
+
+        })
+    </script>
 </body>
+
 </html>

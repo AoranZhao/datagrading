@@ -100,7 +100,7 @@
         <button class="btn-font" id="min"  style="margin-top: 10px">Font_size-</button>
         </br>
         <button class="btn-post" id="submit">Submit</button>
-        <button class="btn-post" id="delete">Delete</button>
+        <button class="btn-post" id="delete" hidden>Delete</button>
         <HR style=" position: relative; top: 14px"  width="100%" color=#E4EFE9 SIZE=2>
     </div>
 <div class="txt">
@@ -161,9 +161,24 @@
         <span>text_content:</span></br>
         <textarea class="student_solution_text" id="text_content" spellcheck="false" ></textarea></br></br>
 
-        <span>label_complete:</span>
-        <div style=" width: 450px; height: 40px">
+        <span>label_complete:</span></br>
+        <br style=" width: 450px; height: 40px">
         <textarea class="student_solution_text" id="label_complete" spellcheck="false"  readonly="readonly"></textarea>
+
+
+        <span >other_scores</span></br>
+        <textarea id="other_scores" readonly="readonly" spellcheck="false" style="width: 300px; height: 170px;
+        margin-bottom: 50px;
+        font-family: Helvetica;
+        font-size: 18px;
+        line-height: 30px;
+        background-color: #E4EDE3;
+        overflow-y:visible;
+
+        resize: none;
+        border-radius: 4px;"></textarea>
+    </div>
+
 <!--
         <button class="grade" id="complete_true">true</button>
         <button class="grade" id="complete_false">false</button></div></br></br>
@@ -174,14 +189,18 @@
          <textarea id="note2" spellcheck="false" style="width: 450px ; display: none"></textarea></br></br>
         <span style="display:none">scan_path:</span>
         <textarea class="student_solution_text" id="scan_path" spellcheck="false" style="width: 400px; height: 60px;display: none"></textarea>
-    </div>
+
 </div>
 
  </div>
+
 </body>
 <script src="jquery-3.3.1.min.js"></script>
 <script>
-
+    let variables = window.location.search;
+    let index = variables.indexOf('&');
+    let variable = variables.slice(5,index);
+    let user_type = variables.slice(index+6);
     let editedJson = null,text_student_solution_id, text_reference_id, text_student_solution_scan, text_rank, refData = null, soData = null,
         text_empty, text_answer_exist, text_different_solution, text_label_complete, text_text_content, text_checked,text_note1,text_note2,text_scan_path, text = null,size = 0;
 
@@ -205,7 +224,10 @@
     $('#soList').append('<option value="init" style="display:none ">Please select solution</option>');
 
     function initRef(){
-        $.get("http://datagrading.learnable.ai/api/grading/v1/references/", function( data ){
+        $.ajaxSetup({
+            headers: { 'Content-Type': 'application/json','x-token':variable}
+        });
+        $.get("http://39.106.153.3:2982/api/grading/v1/references/", function( data ){
            refData = data.data;
            let strHTMLArray = [];
            strHTMLArray.length=0;
@@ -223,13 +245,17 @@
 		
         let options = $('#refList').find('option:selected').val();
         if(options!=undefined) {
-            $.get("http://datagrading.learnable.ai/api/grading/v1/references/"+options+"/solutions", function (data) {
+            $.ajaxSetup({
+                headers: { 'Content-Type': 'application/json','x-token':variable}
+            });
+            $.get("http://39.106.153.3:2982/api/grading/v1/references/"+options+"/solutions", function (data) {
                 soData = data.data;
                 let strHTMLArray = [];
                 strHTMLArray.length = 0;
                 $("#soList").html(strHTMLArray.join(''));
                 strHTMLArray.push('<option value="please select" style="display: none">' + "Please select solution" + "</option>>");
-                // console.log(soData);
+
+                console.log(soData);
                 for (let i = 0; i < soData.length; i++) {
                     let soName = soData[i];
                     strHTMLArray.push('<option value="' + soName + '">' + soName + '</option>>');
@@ -246,14 +272,20 @@
     $("#refList").on('change',function () {
         let options = $('#refList').find('option:selected').val();
         $("#reference_solution").val("");
-        $.get("http://datagrading.learnable.ai/api/grading/v1/references/"+options, function( data ){
+        $.ajaxSetup({
+            headers: { 'Content-Type': 'application/json','x-token':variable}
+        });
+        $.get("http://39.106.153.3:2982/api/grading/v1/references/"+options, function( data ){
             let ref_Data = data.data;
             let ref_so_data =  ref_Data.reference_solution
             $("#reference_solution").val(JSON.stringify(ref_so_data));
 
         });
         if(options!=undefined) {
-            $.get("http://datagrading.learnable.ai/api/grading/v1/references/" + options + "/solutions", function (data) {
+            $.ajaxSetup({
+                headers: { 'Content-Type': 'application/json','x-token':variable}
+            });
+            $.get("http://39.106.153.3:2982/api/grading/v1/references/" + options + "/solutions", function (data) {
                 let soData = data.data;
                 let strHTMLArray = [];
                 strHTMLArray.length = 0;
@@ -279,24 +311,43 @@
     //文本投射在文本框,图片加载
 
     function inputText(e) {
-        $("#student_solution_id").val(JSON.stringify((e.student_solution_id)));
-        $("#ref_id").val(JSON.stringify((e.reference_id)));
-        $("#student_solution_scan").val(JSON.stringify(e.student_solution_scan));
-        $("#rank").val(JSON.stringify(e.score.rank));
-        $("#empty").val(JSON.stringify(e.score.empty));
-        $("#answer_exist").val(JSON.stringify(e.score.answer_exist));
-        $("#different_solution").val(JSON.stringify(e.score.different_solution));
-        $("#label_complete").val(JSON.stringify(e.label_complete));
-        $("#text_content").val(JSON.stringify(e.text_content));
-        $("#scan_path").val(JSON.stringify(e.scan_path));
-		$("#checked").val(JSON.stringify(e.checked));
+        if (e.scores.length > 0) {
+            $("#rank").val(JSON.stringify(e.scores[0].rank));
+            $("#empty").val(JSON.stringify(e.scores[0].empty));
+            $("#answer_exist").val(JSON.stringify(e.scores[0].answer_exist));
+            $("#student_solution_id").val(JSON.stringify((e.student_solution_id)));
+            $("#ref_id").val(JSON.stringify((e.reference_id)));
+            $("#student_solution_scan").val(JSON.stringify(e.student_solution_scan));
+            $("#different_solution").val(JSON.stringify(e.scores[0].different_solution));
+            $("#label_complete").val(JSON.stringify(e.label_complete));
+            $("#text_content").val(JSON.stringify(e.text_content));
+            $("#scan_path").val(JSON.stringify(e.scan_path));
+            $("#checked").val(JSON.stringify(e.checked)); }
+        else {
+            $("#rank").val('');
+            $("#empty").val('');
+            $("#answer_exist").val('');
+            $("#student_solution_id").val(JSON.stringify((e.student_solution_id)));
+            $("#ref_id").val(JSON.stringify((e.reference_id)));
+            $("#student_solution_scan").val(JSON.stringify(e.student_solution_scan));
+            $("#different_solution").val('');
+            $("#label_complete").val(JSON.stringify(e.label_complete));
+            $("#text_content").val(JSON.stringify(e.text_content));
+            $("#scan_path").val(JSON.stringify(e.scan_path));
+            $("#checked").val(JSON.stringify(e.checked));
+        }
+
     };
+
 
     function getDetail(refnum,sonum){
         $(".sdt_slo_text").val("");
         $("#soImg").attr('src','');
         // console.log("http://datagrading.learnable.ai/api/grading/v1/soesonces/"+listnum);
-        $.get( "http://datagrading.learnable.ai/api/grading/v1/references/"+ refnum + "/solutions/"+sonum, function( data ) {
+        $.ajaxSetup({
+            headers: { 'Content-Type': 'application/json','x-token':variable}
+        });
+        $.get( "http://39.106.153.3:2982/api/grading/v1/references/"+ refnum + "/solutions/"+sonum, function( data ) {
             soData = data.data ;
 			if(soData.label_complete==true){
 				$("#com_icon").css("display","initial");
@@ -305,9 +356,19 @@
 				$("#com_icon").css("display","none");
 			}
             inputText(soData);
+
+			if (user_type =='admin'){
+			    if(soData.scores.length>0) {
+                    let other = JSON.stringify(soData.scores);
+                    $("#other_scores").val(other);
+                }else{
+                    $("#other_scores").val('');
+                }
+            }
+			console.log(scan_path);
             let imagesrc = soData.scan_path;
             let imagestrsrc =JSON.stringify(imagesrc);
-            let fimagesrc = "http://"+imagestrsrc.replace('"','').replace('.png"','.png');
+            let fimagesrc = imagestrsrc.replace('"','').replace('.png"','.png');
             $("#soImg").attr('src',fimagesrc);
         });
     }
@@ -408,17 +469,16 @@
             ",\n\"text_content\":"+text_text_content+
 			 ",\n\"checked\":"+text_checked+
 			",\n\"note1\":"+text_note1+ 
-			",\n\"note2\":"+text_note2+
-            ",\n\"scan_path\":"+text_scan_path+"}";
+			",\n\"note2\":"+text_note2+"}";
         console.log(text);
         editedJson  = JSON.parse(text)
         console.log(editedJson);
         let options = $('#refList').find('option:selected').val();
         $.ajax({
             type: "POST",
-            url:  "http://datagrading.learnable.ai/api/grading/v1/references/"+options+ "/solutions/"+editedJson.student_solution_id,
+            url:  "http://39.106.153.3:2982/api/grading/v1/references/"+options+ "/solutions/"+editedJson.student_solution_id,
             data: text,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json','x-token':variable },
             success: success,
             dataType:'json',
         });
@@ -441,7 +501,7 @@
         // $("#soList option[value='+optionname+']").remove();
         $.ajax({
             type: "DELETE",
-            url:  "http://datagrading.learnable.ai/api/grading/v1/references/"+options+ "/solutions/"+editedJson.student_solution_id,
+            url:  "http://39.106.153.3:2982/api/grading/v1/references/"+options+ "/solutions/"+editedJson.student_solution_id,
             headers: { 'Content-Type': 'application/json' },
             success : delete_success,
         });
