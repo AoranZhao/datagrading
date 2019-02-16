@@ -158,7 +158,7 @@ let promise_deleteImages = (scan_id, image_id) => {
                             reject({ statusCode: err.statusCode, reason: err.reason });
                             return;
                         }
-                        if (typeof filePath !== 'undefined') {
+                        if (typeof filePath !== 'undefined' && fs.existsSync(filePath)) {
                             fs.unlinkSync(filePath);
                         }
                         resolve();
@@ -195,7 +195,9 @@ let promise_save = (scan_id, images) => {
             let newPath = path.join(config.STATIC_IMG_CONTAINER_DATA_PATH, paths[paths.length - 1]);
             // fs.renameSync(image.path, newPath);
             fs.copyFileSync(theImage.path, newPath);
-            fs.unlinkSync(theImage.path);
+            if (fs.existsSync(theImage.path)) {
+                fs.unlinkSync(theImage.path);
+            }
             arr.push({
                 scan_id: scan_id,
                 filename: paths[paths.length - 1],

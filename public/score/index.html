@@ -1,70 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <meta charset="UTF-8">
     <title>Grading Data</title>
     <style>
-        div{
+        div {
             margin: 0;
             padding: 0;
         }
-        body{
-            background:url(Jquery&Image&childPage/homepage.png) no-repeat;
-            background-size:cover;
+
+        body {
+            background: url(Jquery&Image&childPage/homepage.png) no-repeat;
+            background-size: cover;
         }
-        .Reference{
-            float:left;
+
+        .Reference {
+            float: left;
             width: auto;
             margin-left: 20%;
             margin-top: 25%;
         }
-        .Solution{
-            float:left;
+
+        .Solution {
+            float: left;
             width: auto;
             margin-left: 75%;
-            magin-top:25%;
-        }
-        div a {
-            font-family: Helvetica; color:#504f4e ;
-            font-size: 26px;
+            magin-top: 25%;
         }
 
+        div a {
+            font-family: Helvetica;
+            color: #504f4e;
+            font-size: 26px;
+        }
     </style>
 </head>
+
 <body>
-    <div class =Login>
+    <div class=Login>
         <form id="form_id" method="post" name="myform">
             <label id="user">User Name :</label>
-            <input type="text" name="username" id="username"/>
+            <input type="text" name="username" id="username" />
             <label id="pass">Password :</label>
-            <input type="password" name="password" id="password"/>
-            <input type="button" value="Login" id="submit"/>
+            <input type="password" name="password" id="password" />
+            <input type="button" value="Login" id="submit" />
             <input type="button" value="Logout" id="logout" hidden>
         </form>
     </div>
     <div id="ref">Please login in to use Reference and Solution. </div>
-    <div class="Reference" hidden><a id = 'link1' href="">Reference</a></div>
-    <div class="Solution"  hidden><a id = 'link2' href="">Solution</a></div>
+    <div class="Reference" hidden><a id='link1' href="">Reference</a></div>
+    <div class="Solution" hidden><a id='link2' href="">Solution</a></div>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
             //$('#logout').hide();
-            const Url = 'http://39.106.153.3:2982/api/auth/v1/auth';
-            $('#submit').click(function(){
+            const Url = 'http://datagrading.learnable.ai/api/auth/v1/auth';
+            $('#submit').click(function () {
                 $.ajax({
-                    url:Url,
-                    type:'POST',
+                    url: Url,
+                    type: 'POST',
                     contentType: 'application/json',
-                    data:JSON.stringify({
-                        username:$('#username').val(),
-                        password:$('#password').val()
+                    data: JSON.stringify({
+                        username: $('#username').val(),
+                        password: $('#password').val()
                     }),
-                    success:function(data){
+                    success: function (data) {
                         let token = data.data.token;
                         let type = data.data.type;
 
-                        $('#link1').attr('href','Jquery&Image&childPage/reference.html?val='+token+'&type='+type);
-                        $('#link2').attr('href','Jquery&Image&childPage/solution.html?val='+token+'&type='+type);
+                        $('#link1').attr('href', 'Jquery&Image&childPage/reference.html?val=' + token + '&type=' + type);
+                        $('#link2').attr('href', 'Jquery&Image&childPage/solution.html?val=' + token + '&type=' + type);
                         console.log('Success');
                         $('#password').hide();
                         $('#username').hide();
@@ -76,13 +82,13 @@
                         $('.Solution').show();
                         $('#ref').hide();
                     },
-                    error:function(result){
+                    error: function (result) {
                         console.log(result);
                         alert('Please try again.');
                     }
                 })
             });
-            $('#logout').click(function(){
+            $('#logout').click(function () {
                 $("#username").val('');
                 $("#password").val('');
                 $('#logout').hide();
@@ -98,4 +104,5 @@
         });
     </script>
 </body>
+
 </html>
